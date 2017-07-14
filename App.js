@@ -11,21 +11,24 @@ const DEFAULT_COORDS = {
 
 const getClientCoords = () => new Promise((resolve, reject) =>
   navigator.geolocation.getCurrentPosition(
-    compose(
-      resolve,
-      prop('coords')
-    ),
+    (pos) => {
+      resolve(pos.coords);
+    },
     reject,
+    {
+      enableHighAccuracy: true,
+      timeout: GEOLOCATION_TIMEOUT,
+    },
   ))
 
 const getDelayedDefaultCoords = (ms, defaultCoords) => new Promise(
   compose(
     resolve => setTimeout(resolve, ms),
-    resolve => partial(resolve, defaultCoords),
+    resolve => partial(resolve, [defaultCoords]),
   ))
 
 const getStartingCoords = () => Promise.race([
-  getClientCoords,
+  getClientCoords(),
   getDelayedDefaultCoords(GEOLOCATION_TIMEOUT, DEFAULT_COORDS),
 ])
 
@@ -36,15 +39,18 @@ export default class App extends React.Component {
 
   componentDidMount() {
     getStartingCoords().then(
-      compose(
-        setState,
-        objOf('startingCoords'),
-      )
-    )
+      (coords) => {
+        this.setState({
+          startingCoords: coords,
+        })
+      }
+    ).catch(console.error)
   }
 
   render() {
     const { startingCoords } = this.state;
+
+    console.log(this.state)
 
     // TODO: Refactor
     let map;
