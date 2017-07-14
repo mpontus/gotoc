@@ -16,6 +16,7 @@
     "preset": "jest-expo"
   },
   "dependencies": {
+    "ramda": "^0.24.1",
     "react": "16.0.0-alpha.12",
     "react-native": "^0.45.1",
     "react-native-maps": "^0.15.3"
