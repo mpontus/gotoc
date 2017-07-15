@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import MapView from './components/MapView';
+import MapView from '../components/MapView';
 import { compose, prop, partial, objOf, pick } from 'ramda'
 
 const GEOLOCATION_TIMEOUT = 2000
