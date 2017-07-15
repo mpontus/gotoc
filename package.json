@@ -16,9 +16,16 @@
     "preset": "jest-expo"
   },
   "dependencies": {
+    "immutable": "^3.8.1",
     "ramda": "^0.24.1",
     "react": "16.0.0-alpha.12",
     "react-native": "^0.45.1",
-    "react-native-maps": "^0.15.3"
+    "react-native-maps": "^0.15.3",
+    "react-redux": "^5.0.5",
+    "recompose": "^0.24.0",
+    "redux": "^3.7.2",
+    "redux-actions": "^2.2.1",
+    "redux-immutable": "^4.0.0",
+    "reselect": "^3.0.1"
   }
 }

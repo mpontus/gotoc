@@ -1,7 +1,10 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import MapView from '../components/MapView';
+import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
 import { compose, prop, partial, objOf, pick } from 'ramda'
+import MapView from '../components/MapView';
+import { getRegion } from '../reducers/map';
+import { regionChange } from '../actions/map';
 
 const GEOLOCATION_TIMEOUT = 2000
 const DEFAULT_REGION = {
@@ -40,31 +43,45 @@ const getStartingRegion = () => Promise.race([
     ...DEFAULT_REGION,
     ...pick(['latitude', 'longitude'], pos),
   }
+});
+
+const mapStateToProps = () => createStructuredSelector({
+  region: getRegion,
 })
+const mapDispatchToProps = { regionChange }
+const enhance = connect(mapStateToProps, mapDispatchToProps);
 
-export default class App extends React.Component {
-  state = {
-    region: null,
-  }
-
+class App extends React.Component {
   componentDidMount() {
-    getStartingRegion().then(
-      (region) => this.setState({ region }),
-    ).catch(console.error)
+    getStartingRegion().then((region) => {
+      const { latitude, longitude, latitudeDelta, longitudeDelta } = region;
+
+      this.props.regionChange(latitude, longitude, latitudeDelta, longitudeDelta);
+    }).catch(console.error)
   }
 
   handleRegionChange = (region) => {
-    this.setState({ region })
+    const { latitude, longitude, latitudeDelta, longitudeDelta } = region;
+
+    this.props.regionChange(latitude, longitude, latitudeDelta, longitudeDelta);
   }
 
   render() {
-    const { region } = this.state;
+    const { region } = this.props;
+    const regionProp = region && pick([
+      'latitude',
+      'longitude',
+      'latitudeDelta',
+      'longitudeDelta',
+    ], region.toJS());
 
     return (
       <MapView
-        region={region}
+        region={regionProp}
         onRegionChange={this.handleRegionChange}
       />
     );
   }
 }
+
+export default enhance(App);
