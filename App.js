@@ -1,13 +1,16 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import MapView from 'react-native-maps';
-import { compose, prop, partial, objOf } from 'ramda'
+import { compose, prop, partial, objOf, pick } from 'ramda'
 
 const GEOLOCATION_TIMEOUT = 2000
-const DEFAULT_COORDS = {
+const DEFAULT_REGION = {
   latitude: 37.78825,
   longitude: -122.4324,
+  latitudeDelta: 0.0045,
+  longitudeDelta: 0.0045,
 }
+const REGION_DELTA = 0.004;
 
 const getClientCoords = () => new Promise((resolve, reject) =>
   navigator.geolocation.getCurrentPosition(
@@ -21,65 +24,81 @@ const getClientCoords = () => new Promise((resolve, reject) =>
     },
   ))
 
-const getDelayedDefaultCoords = (ms, defaultCoords) => new Promise(
-  compose(
-    resolve => setTimeout(resolve, ms),
-    resolve => partial(resolve, [defaultCoords]),
-  ))
+const delay = (ms) => new Promise(
+  (resolve) => setTimeout(resolve, ms)
+)
 
-const getStartingCoords = () => Promise.race([
+const getStartingRegion = () => Promise.race([
   getClientCoords(),
-  getDelayedDefaultCoords(GEOLOCATION_TIMEOUT, DEFAULT_COORDS),
-])
+  delay(GEOLOCATION_TIMEOUT),
+]).then((pos) => {
+  if (!pos) {
+    return DEFAULT_REGION;
+  }
+
+  return {
+    ...DEFAULT_REGION,
+    ...pick(['latitude', 'longitude'], pos),
+  }
+})
 
 export default class App extends React.Component {
   state = {
-    startingCoords: null,
+    region: null,
   }
 
   componentDidMount() {
-    getStartingCoords().then(
-      (coords) => {
-        this.setState({
-          startingCoords: coords,
-        })
-      }
+    getStartingRegion().then(
+      (region) => this.setState({ region }),
     ).catch(console.error)
   }
 
-  render() {
-    const { startingCoords } = this.state;
+  handleRegionChange = (region) => {
+    this.setState({ region })
+  }
 
-    console.log(this.state)
+  render() {
+    const { region } = this.state;
 
     // TODO: Refactor
     let map;
-    if (startingCoords) {
-      const { latitude, longitude } = startingCoords;
-
+    if (region) {
       map = (
         <MapView
           style={styles.map}
-          initialRegion={{
-            latitude: latitude,
-            longitude: longitude,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421,
-          }}
+          provider="google"
+          showsUserLocation={true}
+          userLocationAnnotationTitle="You are here"
+          followsUserLocation={true}
+          showsMyLocationButton={true}
+          showsCompass={true}
+          showsPointsOfInterest={false}
+          toolbarEnabled={false}
+          region={region}
+          onRegionChange={this.handleRegionChange}
         />
       )
     } else {
       map = (
-        <Text>Loading...</Text>
+        <View style={styles.loading}>
+          <Text>Loading...</Text>
+        </View>
       )
     }
 
     return (
       <View style={styles.container}>
         {map}
-        <View style={styles.status}>
-          <Text>Status is displayed here</Text>
-        </View>
+        {region ? (
+          <View style={styles.status}>
+            <Text>Lat: {region.latitude}, Lng: {region.longitude}</Text>
+            <Text>LatD: {region.latitudeDelta.toFixed(5)}, LngD: {region.longitudeDelta.toFixed(5)}</Text>
+          </View>
+        ) : (
+          <View style={styles.status}>
+            <Text>Wait for initial location to load</Text>
+          </View>
+        )}
       </View>
     );
   }
@@ -90,11 +109,17 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
+  loading: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   map: {
     flex: 1,
   },
   status: {
     paddingVertical: 10,
     alignItems: 'center',
+    justifyContent: 'center',
   }
 });
