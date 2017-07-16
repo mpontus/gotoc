@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "devDependencies": {
+    "babel-preset-react-native": "^2.1.0",
     "jest-expo": "~18.0.0",
     "react-test-renderer": "16.0.0-alpha.12"
   },
