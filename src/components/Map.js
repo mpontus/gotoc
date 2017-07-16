@@ -1,7 +1,7 @@
 import React from 'react';
 import MapView from 'react-native-maps';
 
-const Map = (props) => {
+const Map = props => {
   return (
     <MapView
       {...props}
@@ -12,7 +12,7 @@ const Map = (props) => {
       showsPointsOfInterest={false}
       loadingEnabled={true}
     />
-  )
-}
+  );
+};
 
 export default Map;
