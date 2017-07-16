@@ -4,15 +4,18 @@
   "private": true,
   "devDependencies": {
     "babel-eslint": "next",
+    "babel-plugin-module-resolver": "^2.7.1",
     "babel-preset-flow": "^6.23.0",
     "babel-preset-react-native": "^2.1.0",
     "eslint": "^3.19.0",
     "eslint-config-airbnb": "^15.0.2",
     "eslint-config-prettier": "^2.3.0",
+    "eslint-import-resolver-babel-module": "^3.0.0",
+    "eslint-plugin-flowtype": "^2.35.0",
     "eslint-plugin-import": "^2.7.0",
     "eslint-plugin-jsx-a11y": "^5.1.1",
     "eslint-plugin-react": "^7.1.0",
-    "flow-bin": "^0.45.*",
+    "flow-bin": "^0.47.0",
     "husky": "^0.14.3",
     "jest-expo": "~18.0.0",
     "lint-staged": "^4.0.1",
@@ -25,13 +28,13 @@
     "ios": "react-native run-ios",
     "test": "node node_modules/jest/bin/jest.js --watch",
     "prettier": "prettier --single-quote --trailing-comma all --write {,src/**/}*.js{,x}",
-    "lint": "eslint --ignore-path .gitignore .",
+    "lint": "eslint --ignore-path .gitignore --ignore-path .eslintignore .",
     "precommit": "lint-staged"
   },
   "lint-staged": {
     "*.{js,jsx}": [
       "prettier --single-quote --trailing-comma all --write",
-      "eslint --ignore-path .gitignore --fix",
+      "eslint --ignore-path .gitignore --ignore-path .eslintignore --fix",
       "git add"
     ]
   },

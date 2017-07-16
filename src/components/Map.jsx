@@ -1,7 +1,8 @@
+// @flow
 import React from 'react';
 import MapView from 'react-native-maps';
 
-const Map = props =>
+const Map = (props: Object): React.Element<any> =>
   (<MapView
     {...props}
     showsUserLocation

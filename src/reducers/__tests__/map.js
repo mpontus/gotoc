@@ -1,6 +1,6 @@
 import { fromJS } from 'immutable';
+import { regionChange } from 'actions/map';
 import reducer from '../map';
-import { regionChange } from '../../actions/map';
 
 describe('reducer', () => {
   it('must return the initial state', () => {

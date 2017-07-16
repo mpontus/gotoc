@@ -1,3 +1,5 @@
+// @flow
+import type { Map } from 'immutable';
 import React from 'react';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
@@ -7,6 +9,7 @@ import { getRegion } from '../reducers/map';
 import { regionChange } from '../actions/map';
 
 const GEOLOCATION_TIMEOUT = 2000;
+const GEOLOCATION_MAXIMUM_AGE = 2000;
 const REGION_DELTA = 0.004;
 const DEFAULT_REGION = {
   latitude: 37.78825,
@@ -25,6 +28,7 @@ const getClientCoords = () =>
       {
         enableHighAccuracy: true,
         timeout: GEOLOCATION_TIMEOUT,
+        maximumAge: GEOLOCATION_MAXIMUM_AGE,
       },
     ),
   );
@@ -50,15 +54,8 @@ const mapStateToProps = () =>
 const mapDispatchToProps = { regionChange };
 const enhance = connect(mapStateToProps, mapDispatchToProps);
 
-type Region = {
-  latitude: number,
-  longitude: number,
-  latitudeDelta: number,
-  longitudeDelta: number,
-};
-
 type Props = {
-  region: Region,
+  region: Map<*, *>,
   regionChange: (
     latitude: number,
     longitude: number,
@@ -67,7 +64,7 @@ type Props = {
   ) => void,
 };
 
-class App extends React.Component<*, Props, *> {
+class App extends React.Component<void, Props, void> {
   componentDidMount() {
     getStartingRegion().catch(always(DEFAULT_REGION)).then(region => {
       const { latitude, longitude, latitudeDelta, longitudeDelta } = region;
