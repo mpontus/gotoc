@@ -7,7 +7,7 @@ export const regionChange = createAction(
   REGION_CHANGE,
   applySpec({
     region: unapply(
-      zipObj(['latitude', 'longitude', 'latitudeDelta', 'longitudeDelta'])
-    )
-  })
+      zipObj(['latitude', 'longitude', 'latitudeDelta', 'longitudeDelta']),
+    ),
+  }),
 );

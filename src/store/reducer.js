@@ -2,7 +2,7 @@ import { combineReducers } from 'redux-immutable';
 import map from '../reducers/map';
 
 const rootReducer = combineReducers({
-  map
+  map,
 });
 
 export default rootReducer;

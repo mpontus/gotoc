@@ -1,19 +1,19 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
-import { compose, prop, partial, objOf, pick } from 'ramda';
+import { pick, always } from 'ramda';
 import MapView from '../components/MapView';
 import { getRegion } from '../reducers/map';
 import { regionChange } from '../actions/map';
 
 const GEOLOCATION_TIMEOUT = 2000;
+const REGION_DELTA = 0.004;
 const DEFAULT_REGION = {
   latitude: 37.78825,
   longitude: -122.4324,
-  latitudeDelta: 0.0045,
-  longitudeDelta: 0.0045
+  latitudeDelta: REGION_DELTA,
+  longitudeDelta: REGION_DELTA,
 };
-const REGION_DELTA = 0.004;
 
 const getClientCoords = () =>
   new Promise((resolve, reject) =>
@@ -24,9 +24,9 @@ const getClientCoords = () =>
       reject,
       {
         enableHighAccuracy: true,
-        timeout: GEOLOCATION_TIMEOUT
-      }
-    )
+        timeout: GEOLOCATION_TIMEOUT,
+      },
+    ),
   );
 
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
@@ -39,31 +39,46 @@ const getStartingRegion = () =>
 
     return {
       ...DEFAULT_REGION,
-      ...pick(['latitude', 'longitude'], pos)
+      ...pick(['latitude', 'longitude'], pos),
     };
   });
 
 const mapStateToProps = () =>
   createStructuredSelector({
-    region: getRegion
+    region: getRegion,
   });
 const mapDispatchToProps = { regionChange };
 const enhance = connect(mapStateToProps, mapDispatchToProps);
 
-class App extends React.Component {
-  componentDidMount() {
-    getStartingRegion()
-      .then(region => {
-        const { latitude, longitude, latitudeDelta, longitudeDelta } = region;
+type Region = {
+  latitude: number,
+  longitude: number,
+  latitudeDelta: number,
+  longitudeDelta: number,
+};
 
-        this.props.regionChange(
-          latitude,
-          longitude,
-          latitudeDelta,
-          longitudeDelta
-        );
-      })
-      .catch(console.error);
+type Props = {
+  region: Region,
+  regionChange: (
+    latitude: number,
+    longitude: number,
+    latitudeDelta: number,
+    longitudeDelta: number,
+  ) => void,
+};
+
+class App extends React.Component<*, Props, *> {
+  componentDidMount() {
+    getStartingRegion().catch(always(DEFAULT_REGION)).then(region => {
+      const { latitude, longitude, latitudeDelta, longitudeDelta } = region;
+
+      this.props.regionChange(
+        latitude,
+        longitude,
+        latitudeDelta,
+        longitudeDelta,
+      );
+    });
   }
 
   handleRegionChange = region => {
@@ -78,7 +93,7 @@ class App extends React.Component {
       region &&
       pick(
         ['latitude', 'longitude', 'latitudeDelta', 'longitudeDelta'],
-        region.toJS()
+        region.toJS(),
       );
 
     return (

@@ -9,12 +9,7 @@ describe('reducer', () => {
 
   it('must handle dragging the map', () => {
     const state = fromJS(null);
-    const action = regionChange(
-      33,
-      55,
-      0.01,
-      0.02,
-    );
+    const action = regionChange(33, 55, 0.01, 0.02);
 
     expect(reducer(state, action).toJS()).toEqual({
       latitude: 33,
