@@ -1,4 +1,5 @@
 // @flow
+import type { Map } from 'immutable';
 import React from 'react';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
@@ -7,8 +8,8 @@ import MapView from '../components/MapView';
 import { getRegion } from '../reducers/map';
 import { regionChange } from '../actions/map';
 
-const GEOLOCATION_TIMEOUT = 2000;
-const GEOLOCATION_MAXIMUM_AGE = 2000;
+const GEOLOCATION_TIMEOUT = 4000;
+const GEOLOCATION_MAXIMUM_AGE = 20000;
 const REGION_DELTA = 0.004;
 const DEFAULT_REGION = {
   latitude: 37.78825,
@@ -54,7 +55,7 @@ const mapDispatchToProps = { regionChange };
 const enhance = connect(mapStateToProps, mapDispatchToProps);
 
 type Props = {
-  region: any,
+  region: Map<*, *>,
   regionChange: (
     latitude: number,
     longitude: number,
@@ -85,11 +86,11 @@ class App extends React.Component<void, Props, void> {
 
   render() {
     const { region } = this.props;
-    const regionProp = region
-      ? pick(['latitude', 'longitude', 'latitudeDelta', 'longitudeDelta'])(
-          region.toJS(),
-        )
-      : undefined;
+    const regionProp =
+      region &&
+      pick(['latitude', 'longitude', 'latitudeDelta', 'longitudeDelta'])(
+        region.toJS(),
+      );
 
     return (
       <MapView region={regionProp} onRegionChange={this.handleRegionChange} />

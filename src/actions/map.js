@@ -11,9 +11,11 @@ export const regionChange = createAction(
     latitudeDelta: number,
     longitudeDelta: number,
   ) => ({
-    latitude,
-    longitude,
-    latitudeDelta,
-    longitudeDelta,
+    region: {
+      latitude,
+      longitude,
+      latitudeDelta,
+      longitudeDelta,
+    },
   }),
 );
