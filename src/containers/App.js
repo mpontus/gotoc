@@ -8,6 +8,7 @@ import { getRegion } from '../reducers/map';
 import { regionChange } from '../actions/map';
 
 const GEOLOCATION_TIMEOUT = 2000;
+const GEOLOCATION_MAXIMUM_AGE = 2000;
 const REGION_DELTA = 0.004;
 const DEFAULT_REGION = {
   latitude: 37.78825,
@@ -26,6 +27,7 @@ const getClientCoords = () =>
       {
         enableHighAccuracy: true,
         timeout: GEOLOCATION_TIMEOUT,
+        maximumAge: GEOLOCATION_MAXIMUM_AGE,
       },
     ),
   );
@@ -53,10 +55,15 @@ const enhance = connect(mapStateToProps, mapDispatchToProps);
 
 type Props = {
   region: any,
-  regionChange: (region: any) => void,
+  regionChange: (
+    latitude: number,
+    longitude: number,
+    latitudeDelta: number,
+    longitudeDelta: number,
+  ) => void,
 };
 
-class App extends React.Component<{}, Props, {}> {
+class App extends React.Component<void, Props, void> {
   componentDidMount() {
     getStartingRegion().catch(always(DEFAULT_REGION)).then(region => {
       const { latitude, longitude, latitudeDelta, longitudeDelta } = region;
@@ -78,12 +85,11 @@ class App extends React.Component<{}, Props, {}> {
 
   render() {
     const { region } = this.props;
-    const regionProp =
-      region &&
-      pick(
-        ['latitude', 'longitude', 'latitudeDelta', 'longitudeDelta'],
-        region.toJS(),
-      );
+    const regionProp = region
+      ? pick(['latitude', 'longitude', 'latitudeDelta', 'longitudeDelta'])(
+          region.toJS(),
+        )
+      : undefined;
 
     return (
       <MapView region={regionProp} onRegionChange={this.handleRegionChange} />

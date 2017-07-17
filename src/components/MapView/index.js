@@ -11,7 +11,7 @@ type Region = {
 };
 
 type PropTypes = {
-  region: Region,
+  region: Region | void,
   onRegionChange: (region: Region) => void,
 };
 
