@@ -53,6 +53,7 @@
     "redux": "^3.7.2",
     "redux-actions": "^2.2.1",
     "redux-immutable": "^4.0.0",
-    "reselect": "^3.0.1"
+    "reselect": "^3.0.1",
+    "remote-redux-devtools": "^0.5.12"
   }
 }
