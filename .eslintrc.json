@@ -9,7 +9,8 @@
     "flowtype"
   ],
   "rules": {
-    "react/no-unused-prop-types": 0
+    "react/no-unused-prop-types": 0,
+    "react/jsx-filename-extension": 0
   },
   "env": {
     "browser": true,
