@@ -1,4 +1,7 @@
 [ignore]
+; ignore faulty reactotron deps
+.*/node_modules/mitt/src/index.js
+
 ; We fork some components by platform
 .*/*[.]android.js
 

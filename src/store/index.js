@@ -1,6 +1,7 @@
 import { createStore, applyMiddleware } from 'redux';
 import { createEpicMiddleware } from 'redux-observable';
 import { composeWithDevTools } from 'remote-redux-devtools';
+import Reactotron from 'reactotron-react-native';
 import reducer from './reducer';
 import rootEpic from './epic';
 
@@ -17,7 +18,12 @@ export default function configureStore(preloadedState, api) {
     dependencies: { api },
   });
 
-  return createStore(
+  const createStoreImplementation =
+    process.env.NODE_ENV === 'production'
+      ? createStore
+      : Reactotron.createStore;
+
+  return createStoreImplementation(
     reducer,
     preloadedState,
     composeEnhancers(applyMiddleware(epicMiddleware)),

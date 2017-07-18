@@ -6,6 +6,7 @@ import { Provider } from 'react-redux';
 import App from './containers/App';
 import configureStore from './store';
 import YelpApi from './api/yelp';
+import './ReactotronConfig';
 
 const api = new YelpApi(Config.YELP_CLIENT_ID, Config.YELP_CLIENT_SECRET);
 const store = configureStore(undefined, api);

@@ -51,6 +51,8 @@
     "react-native-config": "^0.5.0",
     "react-native-maps": "^0.15.3",
     "react-redux": "^5.0.5",
+    "reactotron-react-native": "^1.12.1",
+    "reactotron-redux": "^1.12.0",
     "recompose": "^0.24.0",
     "redux": "^3.7.2",
     "redux-actions": "^2.2.1",
