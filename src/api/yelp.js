@@ -1,5 +1,6 @@
 // @flow
 import R from 'ramda';
+import qs from 'query-string';
 
 const processResponse = (response: Response) => response.json();
 
@@ -16,15 +17,19 @@ class YelpApi {
   authenticate(): Promise<string> {
     if (!this.authPromise) {
       const { clientId, clientSecret } = this;
-      const body = new URLSearchParams();
-
-      body.set('grant_type', 'client_credentials');
-      body.set('client_id', clientId);
-      body.set('client_secret', clientSecret);
+      // const body = new URLSearchParams();
+      const body = qs.stringify({
+        grant_type: 'client_credentials',
+        client_id: clientId,
+        client_secret: clientSecret,
+      });
 
       this.authPromise = fetch('https://api.yelp.com/oauth2/token', {
         method: 'POST',
         body,
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
       })
         .then(response => response.json())
         .then(result => {
@@ -45,8 +50,6 @@ class YelpApi {
         R.lensPath(['headers', 'Authorization']),
         `Bearer ${accessToken}`,
       );
-
-      console.log({ options }, withAccessToken(options));
 
       return fetch(url, withAccessToken(options));
     });
