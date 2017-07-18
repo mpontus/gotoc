@@ -1,4 +1,7 @@
-# Crud
+# Private
+.env
+
+# Cruft
 /coverage
 
 # OSX

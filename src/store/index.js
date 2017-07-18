@@ -11,9 +11,12 @@ const composeEnhancers = composeWithDevTools({
   port: 8000,
   suppressConnectErrors: false,
 });
-const epicMiddleware = createEpicMiddleware(rootEpic);
 
-export default function configureStore(preloadedState) {
+export default function configureStore(preloadedState, api) {
+  const epicMiddleware = createEpicMiddleware(rootEpic, {
+    dependencies: { api },
+  });
+
   return createStore(
     reducer,
     preloadedState,
