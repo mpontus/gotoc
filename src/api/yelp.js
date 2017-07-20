@@ -4,6 +4,131 @@ import qs from 'query-string';
 
 const processResponse = (response: Response) => response.json();
 
+// Supported Locales
+type Locale =
+  | 'cs_CZ'
+  | 'da_DK'
+  | 'de_AT'
+  | 'de_CH'
+  | 'de_DE'
+  | 'en_AU'
+  | 'en_BE'
+  | 'en_CA'
+  | 'en_CH'
+  | 'en_GB'
+  | 'en_HK'
+  | 'en_IE'
+  | 'en_MY'
+  | 'en_NZ'
+  | 'en_PH'
+  | 'en_SG'
+  | 'en_US'
+  | 'es_AR'
+  | 'es_CL'
+  | 'es_ES'
+  | 'es_MX'
+  | 'fi_FI'
+  | 'fil_PH'
+  | 'fr_BE'
+  | 'fr_CA'
+  | 'fr_CH'
+  | 'fr_FR'
+  | 'it_CH'
+  | 'it_IT'
+  | 'ja_JP'
+  | 'ms_MY'
+  | 'nb_NO'
+  | 'nl_BE'
+  | 'nl_NL'
+  | 'pl_PL'
+  | 'pt_BR'
+  | 'pt_PT'
+  | 'sv_FI'
+  | 'sv_SE'
+  | 'tr_TR'
+  | 'zh_HK'
+  | 'zh_TW';
+
+type SearchQuery = {
+  // Search term (e.g. "food", "restaurants").
+  term?: string,
+  // Specifies the combination of "address, neighborhood, city, state or zip, optional country" to be used when searching for businesses.
+  location?: string,
+  // Latitude of the location you want to search nearby.
+  latitude?: number,
+  // Required if location is not provided. Longitude of the location you want to search nearby.
+  longitude?: number,
+  // Search radius in meters
+  radius?: number,
+  // Categories to filter the search results with.
+  categories?: string,
+  // Specify the locale to return the business information in.
+  locale?: Locale,
+  // Number of business results to return.
+  limit?: number,
+  // Offset the list of returned business results by this amount.
+  offset?: number,
+  // Sort the results by one of the these modes.
+  sort_by?: 'best_match' | 'rating' | 'review_count' | 'distance',
+  // Pricing levels to filter the search result with
+  price?: number | string,
+  // When set to true, only return the businesses open now.
+  open_now?: boolean,
+  // An integer represending the Unix time in the same timezone of the search location.
+  open_at?: number,
+  // Additional filters to restrict search results.
+  attributes?: | 'hot_and_new'
+    | 'hot_and_new'
+    | 'waitlist_reservation'
+    | 'cashback'
+    | 'deals'
+    | 'gender_neutral_restrooms'
+    | string,
+};
+
+type Category = {
+  alias: string,
+  title: string,
+};
+
+type Coordinates = {
+  latitude: number,
+  longitude: number,
+};
+
+export type Business = {
+  rating: number,
+  price: string,
+  phone: string,
+  id: string,
+  is_closed: boolean,
+  categoties: Category[],
+  review_count: number,
+  name: string,
+  url: string,
+  coordinates: Coordinates,
+  image_url: string,
+  location: {
+    country: string,
+    state: string,
+    city: string,
+    zip_code: string,
+    address1: string,
+    address2: string,
+    address3: string,
+  },
+  distance: number,
+  transactions: string[],
+};
+
+export type SearchResult = {
+  total: number,
+  businesses: Business[],
+  region: {
+    center: Coordinates,
+  },
+};
+
 class YelpApi {
   clientId: string;
   clientSecret: string;
@@ -66,6 +191,13 @@ class YelpApi {
       method: 'POST',
       body: JSON.stringify(body),
     }).then(processResponse);
+  }
+
+  search(query: SearchQuery): Promise<SearchResult> {
+    const queryString = qs.stringify(query);
+    const url = `https://api.yelp.com/v3/businesses/search?${queryString}`;
+
+    return this.get(url);
   }
 }
 

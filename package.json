@@ -44,6 +44,7 @@
   },
   "dependencies": {
     "flow": "^0.2.3",
+    "geolib": "^2.0.22",
     "immutable": "^3.8.1",
     "query-string": "^4.3.4",
     "ramda": "^0.24.1",

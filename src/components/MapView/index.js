@@ -49,7 +49,7 @@ const MapView = ({ region, onRegionChange }: PropTypes) =>
       <Map
         style={styles.main}
         region={region}
-        onRegionChange={onRegionChange}
+        onRegionChangeComplete={onRegionChange}
       />
       <View style={styles.status}>
         <Text>
