@@ -42,6 +42,7 @@ flow/
 ./custom-definitions/
 
 [options]
+module.system.node.resolve_dirname=src
 module.system=haste
 
 munge_underscores=true

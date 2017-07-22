@@ -2,14 +2,7 @@
   "presets": ["react-native", "flow"],
   "plugins": [
     ["module-resolver", {
-      "root": ["./src"],
-      "alias": {
-        "components": "./components",
-        "containers": "./containers",
-        "actions": "./actions",
-        "reducers": "./reducers",
-        "types": "./types"
-      }
+      "root": ["./src"]
     }]
   ]
 }
