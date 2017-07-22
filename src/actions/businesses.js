@@ -1,5 +1,5 @@
 // @flow
-import type { Business } from '../api/yelp';
+import type { Business } from 'types/Business';
 import type { Action } from './types';
 
 export const BUSINESSES_ADDED = 'BUSINESSES_ADDED';

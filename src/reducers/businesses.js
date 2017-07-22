@@ -1,17 +1,9 @@
 // @flow
 import { fromJS, List } from 'immutable';
-import { BUSINESSES_ADDED } from '../actions/businesses';
-import type { Action } from '../actions/types';
+import type { Business } from 'types/Business';
+import { BUSINESSES_ADDED } from 'actions/businesses';
+import type { Action } from 'actions/types';
 import type { State } from './types';
-
-type Business = {
-  id: string,
-  name: string,
-  coordinates: {
-    latitude: number,
-    longitude: number,
-  },
-};
 
 export default function businessesReducer(
   state: List<Business> = List(),

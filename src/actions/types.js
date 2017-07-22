@@ -1,21 +1,23 @@
 // @flow
-import type { Business } from '../api/yelp';
+import type { Business } from 'types/Business';
+import type { Location } from 'types/Location';
+import type { Region } from 'types/Region';
 import { REGION_CHANGE } from './map';
 import { BUSINESSES_ADDED } from './businesses';
+import { USER_LOCATION_UPDATED } from './location';
 
 export type Action =
   | {|
       type: typeof REGION_CHANGE,
-      payload: {
-        latitude: number,
-        longitude: number,
-        latitudeDelta: number,
-        longitudeDelta: number,
-      },
+      payload: Region,
     |}
   | {|
       type: typeof BUSINESSES_ADDED,
       payload: {
         businesses: Business[],
       },
+    |}
+  | {|
+      type: typeof USER_LOCATION_UPDATED,
+      payload: Location,
     |};

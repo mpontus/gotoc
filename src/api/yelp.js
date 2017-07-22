@@ -1,6 +1,7 @@
 // @flow
 import R from 'ramda';
 import qs from 'query-string';
+import type { Business } from 'types/Business';
 
 const processResponse = (response: Response) => response.json();
 
@@ -86,39 +87,9 @@ type SearchQuery = {
     | string,
 };
 
-type Category = {
-  alias: string,
-  title: string,
-};
-
 type Coordinates = {
   latitude: number,
   longitude: number,
-};
-
-export type Business = {
-  rating: number,
-  price: string,
-  phone: string,
-  id: string,
-  is_closed: boolean,
-  categoties: Category[],
-  review_count: number,
-  name: string,
-  url: string,
-  coordinates: Coordinates,
-  image_url: string,
-  location: {
-    country: string,
-    state: string,
-    city: string,
-    zip_code: string,
-    address1: string,
-    address2: string,
-    address3: string,
-  },
-  distance: number,
-  transactions: string[],
 };
 
 export type SearchResult = {
