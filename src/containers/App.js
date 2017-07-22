@@ -1,16 +1,17 @@
 // @flow
-import type { Map } from 'immutable';
+import type { Map, List } from 'immutable';
 import React from 'react';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { pick, always } from 'ramda';
 import MapView from '../components/MapView';
 import { getRegion } from '../reducers/map';
+import { getBusinesses } from '../reducers/businesses';
 import { regionChange } from '../actions/map';
 
-const GEOLOCATION_TIMEOUT = 4000;
+const GEOLOCATION_TIMEOUT = 200;
 const GEOLOCATION_MAXIMUM_AGE = 20000;
-const REGION_DELTA = 0.004;
+const REGION_DELTA = 0.4;
 const DEFAULT_REGION = {
   latitude: 37.78825,
   longitude: -122.4324,
@@ -50,12 +51,14 @@ const getStartingRegion = () =>
 const mapStateToProps = () =>
   createStructuredSelector({
     region: getRegion,
+    businesses: getBusinesses,
   });
 const mapDispatchToProps = { regionChange };
 const enhance = connect(mapStateToProps, mapDispatchToProps);
 
 type Props = {
   region: Map<*, *>,
+  businesses: List<*>,
   regionChange: (
     latitude: number,
     longitude: number,
@@ -85,7 +88,7 @@ class App extends React.Component<void, Props, void> {
   };
 
   render() {
-    const { region } = this.props;
+    const { region, businesses } = this.props;
     const regionProp =
       region &&
       pick(['latitude', 'longitude', 'latitudeDelta', 'longitudeDelta'])(
@@ -93,7 +96,15 @@ class App extends React.Component<void, Props, void> {
       );
 
     return (
-      <MapView region={regionProp} onRegionChange={this.handleRegionChange} />
+      <MapView
+        region={regionProp}
+        businesses={businesses.toArray().map(business => ({
+          id: business.get('id'),
+          latitude: business.getIn(['coordinates', 'latitude']),
+          longitude: business.getIn(['coordinates', 'longitude']),
+        }))}
+        onRegionChange={this.handleRegionChange}
+      />
     );
   }
 }

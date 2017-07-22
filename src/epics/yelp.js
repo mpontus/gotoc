@@ -52,7 +52,7 @@ const yelpEpic = (
       const { businesses } = await api.search({
         longitude,
         latitude,
-        radius,
+        radius: Math.min(radius, 40000),
       });
 
       return addBusinesses(businesses);
