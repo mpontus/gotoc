@@ -1,6 +1,7 @@
 // @flow
 import type { Map, List } from 'immutable';
 import React from 'react';
+import { pick } from 'ramda';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import MapView from '../components/MapView';
@@ -8,14 +9,6 @@ import { getRegion } from '../reducers/map';
 import { getBusinesses } from '../reducers/businesses';
 import { getLocation } from '../reducers/location';
 import { regionChange } from '../actions/map';
-
-const REGION_DELTA = 0.4;
-const DEFAULT_REGION = {
-  latitude: 37.78825,
-  longitude: -122.4324,
-  latitudeDelta: REGION_DELTA,
-  longitudeDelta: REGION_DELTA,
-};
 
 const mapStateToProps = () =>
   createStructuredSelector({
@@ -46,13 +39,13 @@ class App extends React.Component<void, Props, void> {
   };
 
   render() {
-    const { location, businesses } = this.props;
-    const region = { ...DEFAULT_REGION };
-
-    if (location.get('acquired')) {
-      const { latitude, longitude } = location.toJS();
-      Object.assign(region, { latitude, longitude });
-    }
+    const { businesses } = this.props;
+    const region = pick([
+      'latitude',
+      'longitude',
+      'latitudeDelta',
+      'longitudeDelta',
+    ])(this.props.region.toJS());
 
     return (
       <MapView
