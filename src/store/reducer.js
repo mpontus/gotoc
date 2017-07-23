@@ -1,12 +1,13 @@
 import { combineReducers } from 'redux-immutable';
-import map from '../reducers/map';
+import createMapReducer from '../reducers/map';
 import businesses from '../reducers/businesses';
 import location from '../reducers/location';
 
-const rootReducer = combineReducers({
-  map,
-  businesses,
-  location,
-});
+const rootReducerFactory = config =>
+  combineReducers({
+    map: createMapReducer(config),
+    businesses,
+    location,
+  });
 
-export default rootReducer;
+export default rootReducerFactory;

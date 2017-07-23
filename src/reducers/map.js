@@ -1,26 +1,44 @@
+// @flow
 import { Map } from 'immutable';
 import { pick } from 'ramda';
 import { handleActions } from 'redux-actions';
+import { getDeltasForRadius } from 'util/geolib';
 import { REGION_CHANGE } from '../actions/map';
 
-const initialState = null;
+function getInitialState(config: Config) {
+  const { defaultLatitude, defaultLongitude, defaultRadius } = config;
+  const {
+    latitude: latitudeDelta,
+    longitude: longitudeDelta,
+  } = getDeltasForRadius(defaultLatitude, defaultLongitude, defaultRadius);
 
-const mapReducer = handleActions(
-  {
-    [REGION_CHANGE]: (state, action) => {
-      const { region } = action.payload;
+  return Map({
+    default: true,
+    latitude: defaultLatitude,
+    longitude: defaultLongitude,
+    latitudeDelta,
+    longitudeDelta,
+  });
+}
 
-      return Map(
-        pick(
-          ['latitude', 'longitude', 'latitudeDelta', 'longitudeDelta'],
-          region,
-        ),
-      );
+const mapReducerFactory = (config: Config) =>
+  handleActions(
+    {
+      [REGION_CHANGE]: (state, action) => {
+        const { region } = action.payload;
+
+        return Map({
+          default: false,
+          ...pick(
+            ['latitude', 'longitude', 'latitudeDelta', 'longitudeDelta'],
+            region,
+          ),
+        });
+      },
     },
-  },
-  initialState,
-);
+    getInitialState(config),
+  );
 
-export default mapReducer;
+export default mapReducerFactory;
 
 export const getRegion = state => state.get('map');
