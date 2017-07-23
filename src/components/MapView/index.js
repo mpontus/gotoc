@@ -31,7 +31,7 @@ const MapView = ({ region, businesses, onRegionChange }: PropTypes) =>
       <Map
         style={styles.main}
         region={region}
-        onRegionChangeComplete={onRegionChange}
+        onRegionChange={onRegionChange}
         markers={businesses.map(createMarkerFromBusiness)}
       />
       <View style={styles.status}>
