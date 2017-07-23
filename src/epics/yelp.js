@@ -20,6 +20,7 @@ const yelpEpic = (
 ): Observable<Action> =>
   action$
     .filter((action: Action) => action.type === REGION_CHANGE)
+    .throttleTime(1000)
     // $FlowFixMe
     .pluck('payload', 'region')
     .mergeMap(async (region: Region) => {
