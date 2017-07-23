@@ -24,4 +24,14 @@ declare module 'geolib' {
     accuracy?: number,
     precision?: number,
   ): number;
+
+  declare function computeDestinationPoint(
+    start: Coordinates,
+    distance: number,
+    bearing: number,
+    radius?: number,
+  ): {
+    latitude: number,
+    longitude: number,
+  };
 }
