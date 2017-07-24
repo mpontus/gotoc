@@ -21,7 +21,7 @@ export default function configureStore(preloadedState, api, config) {
       : Reactotron.createStore;
   const reducer = createReducer(config);
   const epicMiddleware = createEpicMiddleware(rootEpic, {
-    dependencies: { api },
+    dependencies: { api, config },
   });
   const middleware = applyMiddleware(epicMiddleware, logger);
 

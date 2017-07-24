@@ -1,43 +1,113 @@
 // @flow
-import type { Observable } from 'rxjs';
+import { Observable } from 'rxjs';
+import { curry } from 'ramda';
+import type { Config } from 'types/Config';
+import type { Business } from 'types/Business';
 import { getRadiusForRegion } from 'util/geolib';
 import { REGION_CHANGE } from '../actions/map';
 import { addBusinesses } from '../actions/businesses';
 import type YelpApi from '../api/yelp';
 import type { Action } from '../actions/types';
 
-type Region = {
-  latitude: number,
-  longitude: number,
-  latitudeDelta: number,
-  longitudeDelta: number,
+type HasCount = {
+  count: number,
 };
+
+type Fetcher = (offset: number) => Promise<HasCount>;
+
+/**
+ * Returns an Observable with responses produed by repeatedly calling the API.
+ *
+ * Given a function which returns a promise which resolves to a response object,
+ * return an Observable which responses produced by calling this function
+ * repeatedly until the source exhaustion, determined by the total prop present
+ * in the response.
+ */
+export const exhaustiveFetch = (fetcher: Fetcher, offset: number = 0) =>
+  Observable.defer(() => fetcher(offset))
+    .mergeMap(response => {
+      const { count } = response;
+      const nextOffset = offset + count;
+      const next$ =
+        count > 0 ? exhaustiveFetch(fetcher, nextOffset) : Observable.empty();
+
+      return [Observable.of(response), next$];
+    })
+    .mergeAll();
+
+/**
+ * Creates fetcher compatible with `exhaustiveFetch`
+ */
+const yelpSearch = (api, latitude, longitude) => offset =>
+  api
+    .search({
+      sort_by: 'distance',
+      limit: 50,
+      latitude,
+      longitude,
+      offset,
+    })
+    .then(response => ({
+      ...response,
+      count: response.businesses.length,
+    }));
+
+const createBusinessesObservable = curry(
+  (
+    api: YelpApi,
+    config: Config,
+    latitude: number,
+    longitude: number,
+    latitudeDelta: number,
+    longitudeDelta: number,
+  ) => {
+    const radius = getRadiusForRegion(
+      latitude,
+      longitude,
+      latitudeDelta,
+      longitudeDelta,
+    );
+    const fetcher = yelpSearch(api, latitude, longitude);
+    const response$ = exhaustiveFetch(fetcher)
+      // Make at most 5 requests for every location change
+      .take(config.maxConsecutiveRequests);
+    const business$ = response$
+      // $FlowFixMe
+      .pluck('businesses')
+      // Flatten the stream of responses into a stream of items
+      .mergeAll()
+      .takeWhile(({ distance }) => distance <= radius);
+
+    return business$.bufferCount(config.businessesPerAction);
+  },
+);
 
 const yelpEpic = (
   action$: Observable<Action>,
   store: any,
-  { api }: { api: YelpApi },
-): Observable<Action> =>
-  action$
-    .filter((action: Action) => action.type === REGION_CHANGE)
-    .throttleTime(1000)
-    // $FlowFixMe
-    .pluck('payload', 'region')
-    .mergeMap(async (region: Region) => {
-      const { latitude, longitude, latitudeDelta, longitudeDelta } = region;
-      const radius = getRadiusForRegion(
-        latitude,
-        longitude,
-        latitudeDelta,
-        longitudeDelta,
-      );
-      const { businesses } = await api.search({
-        longitude,
-        latitude,
-        radius: Math.min(radius, 40000),
-      });
+  { api, config }: { api: YelpApi, config: Config },
+): Observable<Action> => {
+  const getBusinessesForRegion = createBusinessesObservable(api, config);
 
-      return addBusinesses(businesses);
-    });
+  return (
+    action$
+      .debounceTime(100)
+      // $FlowFixMe
+      .ofType(REGION_CHANGE)
+      .mergeMap((action: Action): Observable<Business> => {
+        // $FlowFixMe
+        const { region } = action.payload;
+        const { latitude, longitude, latitudeDelta, longitudeDelta } = region;
+
+        return getBusinessesForRegion(
+          latitude,
+          longitude,
+          latitudeDelta,
+          longitudeDelta,
+        );
+      })
+      .map(addBusinesses)
+  );
+};
 
 export default yelpEpic;

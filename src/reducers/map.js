@@ -2,6 +2,7 @@
 import { Map } from 'immutable';
 import { pick } from 'ramda';
 import { handleActions } from 'redux-actions';
+import type { Config } from 'types/Config';
 import { getDeltasForRadius } from 'util/geolib';
 import { REGION_CHANGE } from '../actions/map';
 
@@ -41,4 +42,4 @@ const mapReducerFactory = (config: Config) =>
 
 export default mapReducerFactory;
 
-export const getRegion = state => state.get('map');
+export const getRegion = (state: Map<*, *>) => state.get('map');
