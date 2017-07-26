@@ -3,19 +3,23 @@ import type { Map, List } from 'immutable';
 import React from 'react';
 import { pick } from 'ramda';
 import { connect } from 'react-redux';
-import { createStructuredSelector } from 'reselect';
-import MapView from '../components/MapView';
-import { getRegion } from '../reducers/map';
-import { getBusinesses } from '../reducers/businesses';
-import { getLocation } from '../reducers/location';
-import { regionChange } from '../actions/map';
+import MapView from 'components/MapView';
+import { getRegion } from 'reducers/map';
+import { getLocation } from 'reducers/location';
+import { makeGetBusinessesInRegion } from 'reducers/points';
+import { regionChange } from 'actions/map';
 
-const mapStateToProps = () =>
-  createStructuredSelector({
-    region: getRegion,
-    businesses: getBusinesses,
-    location: getLocation,
-  });
+const mapStateToProps = () => {
+  const getBusinessesInRegion = makeGetBusinessesInRegion();
+
+  return state => {
+    const region = getRegion(state);
+    const location = getLocation(state);
+    const businesses = getBusinessesInRegion(state, { region });
+
+    return { region, location, businesses };
+  };
+};
 const mapDispatchToProps = { regionChange };
 const enhance = connect(mapStateToProps, mapDispatchToProps);
 
