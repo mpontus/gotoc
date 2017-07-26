@@ -1,39 +1,32 @@
 // @flow
-import { fromJS, List } from 'immutable';
+import { Map } from 'immutable';
 import type { Business } from 'types/Business';
 import { BUSINESSES_ADDED } from 'actions/businesses';
-import { REGION_CHANGE } from 'actions/map';
 import type { Action } from 'actions/types';
 import type { State } from './types';
 
 export default function businessesReducer(
-  state: List<Map<*, *>> = List(),
+  state: Map<string, Business>,
   action: Action,
 ) {
   switch (action.type) {
-    case REGION_CHANGE: {
+    case BUSINESSES_ADDED: {
       // $FlowFixMe
-      const { region } = action.payload;
+      const { businesses } = action.payload;
 
-      return state.filter(business => {
-        // $FlowFixMe
-        const { latitude, longitude } = business.get('coordinates').toJS();
-        const { latitudeDelta, longitudeDelta } = region;
+      return state.withMutations(map => {
+        businesses.forEach(business => {
+          const { id } = business;
 
-        return (
-          Math.abs(region.latitude - latitude) < latitudeDelta / 2 &&
-          Math.abs(region.longitude - longitude) < longitudeDelta / 2
-        );
+          map.set(id, business);
+        });
       });
     }
-    case BUSINESSES_ADDED:
-      // $FlowFixMe
-      return fromJS(action.payload.businesses);
 
     default:
       return state;
   }
 }
 
-export const getBusinesses = (state: State): List<Business> =>
+export const getBusinesses = (state: State): Map<string, Business> =>
   state.get('businesses');
