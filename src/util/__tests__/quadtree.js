@@ -1,20 +1,5 @@
 import Quadtree, { Node, Boundaries } from '../quadtree';
 
-describe('Quadtree', () => {
-  it('returns points in range', () => {
-    const [data1, data2, data3] = ['foo', 'bar', 'baz'];
-
-    const qt = Quadtree.create(100, 100)
-      .insert(30, 30, data1)
-      .insert(50, 50, data2)
-      .insert(70, 70, data3);
-
-    const items = qt.queryRange(25, 25, 30, 30);
-
-    expect(items).toEqual([data1, data2]);
-  });
-});
-
 describe('Boundaries', () => {
   it('must correctly detect the containment of points', () => {
     const boundaries = new Boundaries(10, 10, 10, 10);
@@ -49,6 +34,36 @@ describe('Boundaries', () => {
         Boundaries.create(0, 0, 10, 10),
       ),
     ).toBe(true);
+  });
+
+  it('can be subdivided', () => {
+    const b = new Boundaries(10, 20, 30, 40);
+    const [b1, b2, b3, b4] = b.subdivide();
+
+    expect(b1).toMatchObject({
+      x: 10,
+      y: 20,
+      width: 15,
+      height: 20,
+    });
+    expect(b2).toMatchObject({
+      x: 25,
+      y: 20,
+      width: 15,
+      height: 20,
+    });
+    expect(b3).toMatchObject({
+      x: 10,
+      y: 40,
+      width: 15,
+      height: 20,
+    });
+    expect(b4).toMatchObject({
+      x: 25,
+      y: 40,
+      width: 15,
+      height: 20,
+    });
   });
 });
 
@@ -88,5 +103,20 @@ describe('Node', () => {
       { x: 60, y: 60, data: 'foo' },
       { x: 70, y: 70, data: 'bar' },
     ]);
+  });
+});
+
+describe('Quadtree', () => {
+  it('returns points in range', () => {
+    const [data1, data2, data3] = ['foo', 'bar', 'baz'];
+
+    const qt = Quadtree.create(100, 100)
+      .insert(30, 30, data1)
+      .insert(50, 50, data2)
+      .insert(70, 70, data3);
+
+    const items = qt.queryRange(25, 25, 30, 30);
+
+    expect(items).toEqual([data1, data2]);
   });
 });
