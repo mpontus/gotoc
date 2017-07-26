@@ -20,8 +20,6 @@ export class Boundaries {
   y: number;
   width: number;
   height: number;
-  lazyHalfWidth: number | void;
-  lazyHalfHeight: number | void;
 
   constructor(x: number, y: number, width: number, height: number) {
     this.x = x;
@@ -44,55 +42,14 @@ export class Boundaries {
     return x1 + w1 > x2 && x1 <= x2 + w2 && y1 + h1 > y2 && y1 <= y2 + h2;
   }
 
-  get halfWidth(): number {
-    if (!this.lazyHalfWidth) {
-      this.lazyHalfWidth = this.width / 2;
-    }
-
-    return this.lazyHalfWidth;
-  }
-
-  get halfHeight(): number {
-    if (!this.lazyHalfHeight) {
-      this.lazyHalfHeight = this.height / 2;
-    }
-
-    return this.lazyHalfHeight;
-  }
-
-  get nw(): Boundaries {
-    return new Boundaries(this.x, this.y, this.halfWidth, this.halfHeight);
-  }
-
-  get ne(): Boundaries {
-    return new Boundaries(
-      this.x + this.halfWidth,
-      this.y,
-      this.halfWidth,
-      this.halfHeight,
-    );
-  }
-
-  get sw(): Boundaries {
-    return new Boundaries(
-      this.x,
-      this.y + this.halfHeight,
-      this.halfWidth,
-      this.halfHeight,
-    );
-  }
-
-  get se(): Boundaries {
-    return new Boundaries(
-      this.x + this.halfWidth,
-      this.y + this.halfHeight,
-      this.halfWidth,
-      this.halfHeight,
-    );
-  }
-
   subdivide(): Boundaries[] {
-    return [this.nw, this.ne, this.sw, this.se];
+    const { x, y } = this;
+    const hw = this.width / 2;
+    const hh = this.height / 2;
+
+    return [[0, 0], [hw, 0], [0, hh], [hw, hh]].map(
+      ([ox, oy]) => new Boundaries(x + ox, y + oy, hw, hh),
+    );
   }
 }
 
@@ -168,14 +125,15 @@ export class Node {
 }
 
 export default class Quadtree {
-  static create(width: number, height: number, capacity = DEFAULT_CAPACITY) {
+  static create(
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    capacity = DEFAULT_CAPACITY,
+  ) {
     return new Quadtree(
-      new Node(
-        new Boundaries(0, 0, width, height),
-        undefined,
-        undefined,
-        capacity,
-      ),
+      new Node(new Boundaries(x, y, w, h), undefined, undefined, capacity),
     );
   }
 
