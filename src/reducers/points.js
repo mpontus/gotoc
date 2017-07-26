@@ -1,7 +1,9 @@
 import { Map, Set } from 'immutable';
 import { handleActions } from 'redux-actions';
+import { createSelector } from 'reselect';
 import { prop } from 'ramda';
 import Quadtree from 'util/quadtree';
+import { getBusinesses } from 'reducers/businesses';
 import { BUSINESSES_ADDED } from 'actions/businesses';
 
 const initialState = Map({
@@ -49,5 +51,26 @@ const pointsReducer = (state = initialState, action) => {
     tree: treeReducer(tree, action, state),
   });
 };
+
+const getPoints = state => state.getIn(['points', 'tree']);
+
+const getRegionFromProps = (state, ownProps) => ownProps.region;
+
+export const makeGetBusinessesInRegion = () =>
+  createSelector(
+    [getPoints, getBusinesses, getRegionFromProps],
+    (points, businesses, region) => {
+      const { latitude, longitude, latitudeDelta, longitudeDelta } = region;
+
+      return points
+        .queryRange(
+          latitude - latitudeDelta / 2,
+          longitude - longitudeDelta / 2,
+          latitudeDelta,
+          longitudeDelta,
+        )
+        .map(id => businesses.get(id));
+    },
+  );
 
 export default pointsReducer;
