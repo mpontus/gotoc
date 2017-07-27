@@ -6,7 +6,7 @@ import type { Action } from 'actions/types';
 import type { State } from './types';
 
 export default function businessesReducer(
-  state: Map<string, Business>,
+  state: Map<string, Business> = Map(),
   action: Action,
 ) {
   switch (action.type) {
