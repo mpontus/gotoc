@@ -33,7 +33,7 @@ const treeReducer = (state, action, context) => {
         .filter(business => !index.has(business.id))
         .reduce((points, business) => {
           const { id } = business;
-          const { latitude, longitude } = business.coords;
+          const { latitude, longitude } = business.coordinates;
 
           return points.insert(latitude, longitude, id);
         }, state);
