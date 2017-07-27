@@ -1,4 +1,5 @@
 import { Observable } from 'rxjs';
+import { ActionsObservable } from 'redux-observable';
 import R from 'ramda';
 import { regionChange } from 'actions/map';
 import { getRadiusForRegion } from 'util/geolib';
@@ -34,7 +35,7 @@ describe('Yelp Epic', () => {
     });
 
     const action = regionChange(1, 2, 3, 4);
-    const input$ = Observable.of(action);
+    const input$ = ActionsObservable.of(action);
 
     const api = {
       search: jest.fn(),
@@ -65,7 +66,7 @@ describe('Yelp Epic', () => {
 
   it('must query the api until all pages are exhausted', async () => {
     const action = regionChange(1, 2, 3, 4);
-    const input$ = Observable.of(action);
+    const input$ = ActionsObservable.of(action);
 
     const api = {
       search: jest.fn(),
@@ -74,20 +75,22 @@ describe('Yelp Epic', () => {
     api.search
       .mockReturnValueOnce(
         makeResponse({
-          total: 2,
           businesses: [{ distance: 3 }],
         }),
       )
       .mockReturnValueOnce(
         makeResponse({
-          total: 3,
           businesses: [{ distance: 4 }],
         }),
       )
       .mockReturnValueOnce(
         makeResponse({
-          total: 3,
           businesses: [{ distance: 5 }, { distance: 6 }, { distance: 7 }],
+        }),
+      )
+      .mockReturnValueOnce(
+        makeResponse({
+          businesses: [],
         }),
       );
 
@@ -99,12 +102,12 @@ describe('Yelp Epic', () => {
     )(output);
 
     expect(businesses.length).toBe(5);
-    expect(api.search).toHaveBeenCalledTimes(3);
+    expect(api.search).toHaveBeenCalledTimes(4);
   });
 
   it('must limit the amount of requests per region change', async () => {
     const action = regionChange(1, 2, 3, 4);
-    const input$ = Observable.of(action);
+    const input$ = ActionsObservable.of(action);
 
     const api = {
       search: jest.fn(),
@@ -129,11 +132,10 @@ describe('Yelp Epic', () => {
 
 describe('exhaustiveFetch', () => {
   it('must return Observable', () => {
-    const getter = () =>
-      Promise.resolve({
-        count: 0,
-        total: 0,
-      });
+    const getter = jest.fn();
+
+    getter.mockReturnValueOnce(Promise.resolve({ count: 0 }));
+
     const result = exhaustiveFetch(getter);
 
     expect(result).toBeInstanceOf(Observable);
@@ -142,57 +144,63 @@ describe('exhaustiveFetch', () => {
   it('must emit the response returned by getter', async () => {
     const getter = jest.fn();
 
-    getter.mockReturnValue(Promise.resolve({ count: 1, total: 1 }));
+    getter
+      .mockReturnValueOnce(Promise.resolve({ count: 1 }))
+      .mockReturnValueOnce(Promise.resolve({ count: 0 }));
 
     const emittedValues = await exhaustiveFetch(getter).toArray().toPromise();
 
-    expect(emittedValues).toEqual([{ count: 1, total: 1 }]);
+    expect(emittedValues).toEqual([{ count: 1 }, { count: 0 }]);
   });
 
   it('must call getter with an initial offset of 0', async () => {
     const getter = jest.fn();
 
-    getter.mockReturnValue(Promise.resolve({ count: 1, total: 1 }));
+    getter.mockReturnValueOnce(Promise.resolve({ count: 0 }));
+
     await exhaustiveFetch(getter).toPromise();
 
     expect(getter).toHaveBeenCalledWith(0);
   });
 
-  it('must call the getter until accumulated count exceeds total', async () => {
+  it('must call the getter as long as count is positive', async () => {
     const getter = jest.fn();
 
     getter
-      .mockReturnValueOnce(Promise.resolve({ count: 1, total: 2 }))
-      .mockReturnValueOnce(Promise.resolve({ count: 1, total: 2 }));
+      .mockReturnValueOnce(Promise.resolve({ count: 2 }))
+      .mockReturnValueOnce(Promise.resolve({ count: 1 }))
+      .mockReturnValueOnce(Promise.resolve({ count: 0 }));
 
     await exhaustiveFetch(getter).toPromise();
 
-    expect(getter).toHaveBeenCalledTimes(2);
+    expect(getter).toHaveBeenCalledTimes(3);
     expect(getter).toHaveBeenCalledWith(0);
-    expect(getter).toHaveBeenCalledWith(1);
+    expect(getter).toHaveBeenCalledWith(2);
+    expect(getter).toHaveBeenCalledWith(3);
   });
 
   it('must emit values returned by the getter', async () => {
     const getter = jest.fn();
 
     getter
-      .mockReturnValueOnce(Promise.resolve({ count: 1, total: 2 }))
-      .mockReturnValueOnce(Promise.resolve({ count: 1, total: 2 }));
+      .mockReturnValueOnce(Promise.resolve({ count: 2, foo: 'bar' }))
+      .mockReturnValueOnce(Promise.resolve({ count: 1, bar: 'baz' }))
+      .mockReturnValueOnce(Promise.resolve({ count: 0, baz: 'foo' }));
 
     const emittedValues = await exhaustiveFetch(getter).toArray().toPromise();
 
     expect(emittedValues).toEqual([
-      { count: 1, total: 2 },
-      { count: 1, total: 2 },
+      { count: 2, foo: 'bar' },
+      { count: 1, bar: 'baz' },
+      { count: 0, baz: 'foo' },
     ]);
   });
 
-  // Currently calls fetcher one time too many
-  it('can be aborted using operators', async () => {
+  it('can be controlled by the consumer', async () => {
     const limit = 2;
     const getter = jest.fn();
 
-    getter.mockReturnValue(Promise.resolve({ count: 1, total: 10 }));
+    getter.mockReturnValue(Promise.resolve({ count: 1 }));
 
     await exhaustiveFetch(getter).take(limit).toPromise();
 

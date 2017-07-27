@@ -16,12 +16,7 @@ type HasCount = {
 type Fetcher = (offset: number) => Promise<HasCount>;
 
 /**
- * Returns an Observable with responses produed by repeatedly calling the API.
- *
- * Given a function which returns a promise which resolves to a response object,
- * return an Observable which responses produced by calling this function
- * repeatedly until the source exhaustion, determined by the total prop present
- * in the response.
+ * Calls fetcher so long as it returns positive count.
  */
 export const exhaustiveFetch = (fetcher: Fetcher, offset: number = 0) =>
   Observable.defer(() => fetcher(offset))
