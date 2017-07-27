@@ -1,5 +1,6 @@
 // @flow
 import { Map } from 'immutable';
+import { createSelector } from 'reselect';
 import type { Action } from 'actions/types';
 import { USER_LOCATION_UPDATED } from 'actions/location';
 
@@ -36,7 +37,9 @@ function locationReducer(
   }
 }
 
-export const getLocation = (state: Map<*, *>): Location =>
-  state.get('location');
+export const getLocation = createSelector(
+  state => state.get('location'),
+  location => location.toJS(),
+);
 
 export default locationReducer;

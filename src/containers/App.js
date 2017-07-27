@@ -1,13 +1,14 @@
 // @flow
-import type { Map, List } from 'immutable';
 import React from 'react';
-import { pick } from 'ramda';
 import { connect } from 'react-redux';
 import MapView from 'components/MapView';
 import { getRegion } from 'reducers/map';
 import { getLocation } from 'reducers/location';
 import { makeGetBusinessesInRegion } from 'reducers/points';
 import { regionChange } from 'actions/map';
+import type { Location } from 'types/Location';
+import type { Region } from 'types/Region';
+import type { Business } from 'types/Business';
 
 const mapStateToProps = () => {
   const getBusinessesInRegion = makeGetBusinessesInRegion();
@@ -24,9 +25,9 @@ const mapDispatchToProps = { regionChange };
 const enhance = connect(mapStateToProps, mapDispatchToProps);
 
 type Props = {
-  location: Map<*, *>,
-  region: Map<*, *>,
-  businesses: List<*>,
+  location: Location,
+  region: Region,
+  businesses: Business[],
   regionChange: (
     latitude: number,
     longitude: number,
@@ -43,21 +44,14 @@ class App extends React.Component<void, Props, void> {
   };
 
   render() {
-    const { businesses } = this.props;
-    const region = pick([
-      'latitude',
-      'longitude',
-      'latitudeDelta',
-      'longitudeDelta',
-    ])(this.props.region.toJS());
+    const { region, businesses } = this.props;
 
     return (
       <MapView
         region={region}
-        businesses={businesses.toArray().map(business => ({
-          id: business.get('id'),
-          latitude: business.getIn(['coordinates', 'latitude']),
-          longitude: business.getIn(['coordinates', 'longitude']),
+        businesses={businesses.map(business => ({
+          ...business,
+          ...business.coordinates,
         }))}
         onRegionChange={this.handleRegionChange}
       />
