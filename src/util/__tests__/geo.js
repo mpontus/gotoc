@@ -79,13 +79,13 @@ describe('geo utils', () => {
         // Coordinates of the corners of the region
         const cornerCoords = [
           // Top left
-          [latitude + latitudeDelta, longitude - longitudeDelta],
+          [latitude + latitudeDelta / 2, longitude - longitudeDelta / 2],
           // Top right
-          [latitude + latitudeDelta, longitude + longitudeDelta],
+          [latitude + latitudeDelta / 2, longitude + longitudeDelta / 2],
           // Bottom left
-          [latitude - latitudeDelta, longitude - longitudeDelta],
+          [latitude - latitudeDelta / 2, longitude - longitudeDelta / 2],
           // Bottom right
-          [latitude - latitudeDelta, longitude + longitudeDelta],
+          [latitude - latitudeDelta / 2, longitude + longitudeDelta / 2],
         ];
 
         // Convert corner coordinates to distance from the starting point

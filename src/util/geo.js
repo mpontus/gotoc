@@ -56,12 +56,12 @@ export function getRadiusForRegion(
 ) {
   const start = { latitude, longitude };
   const topLeft = {
-    latitude: latitude - latitudeDelta,
-    longitude: longitude - longitudeDelta,
+    latitude: latitude - latitudeDelta / 2,
+    longitude: longitude - longitudeDelta / 2,
   };
   const bottomRight = {
-    latitude: latitude + latitudeDelta,
-    longitude: longitude + longitudeDelta,
+    latitude: latitude + latitudeDelta / 2,
+    longitude: longitude + longitudeDelta / 2,
   };
 
   return Math.max(getDistance(start, topLeft), getDistance(start, bottomRight));
