@@ -128,6 +128,57 @@ describe('Yelp Epic', () => {
 
     expect(api.search).toHaveBeenCalledTimes(2);
   });
+
+  // FIXME: Use fake scheduler
+  // Jest fake timers do not work here for some reason
+  it('should abort pagination chain when new action comes through', async () => {
+    const api = {
+      search: jest.fn(),
+    };
+
+    api.search.mockImplementation(
+      () =>
+        new Promise(resolve => {
+          // Simulate delayed response
+          setTimeout(() => {
+            resolve({
+              businesses: [{ distance: 999 }],
+            });
+          }, 300);
+        }),
+    );
+
+    const config = {
+      maxConsecutiveRequests: 100,
+      businessesPerAction: 1,
+    };
+
+    const input$ = new ActionsObservable(
+      Observable.create(observer => {
+        observer.next(regionChange(1, 2, 3, 4));
+
+        // Simulate delayed action
+        setTimeout(() => {
+          observer.next(regionChange(5, 6, 7, 8));
+          observer.complete();
+        }, 450);
+      }),
+    );
+
+    const output$ = epic(input$, null, { api, config });
+
+    await output$.take(3).toPromise();
+
+    // Second action is supposed to come through after the beginning of the
+    // second request for first region.
+    expect(api.search).toHaveBeenCalledTimes(4);
+    expect(api.search.mock.calls).toMatchObject([
+      [{ latitude: 1, longitude: 2, offset: 0 }],
+      [{ latitude: 1, longitude: 2, offset: 1 }],
+      [{ latitude: 5, longitude: 6, offset: 0 }],
+      [{ latitude: 5, longitude: 6, offset: 1 }],
+    ]);
+  });
 });
 
 describe('exhaustiveFetch', () => {

@@ -85,24 +85,22 @@ const yelpEpic = (
 ): Observable<Action> => {
   const getBusinessesForRegion = createBusinessesObservable(api, config);
 
-  return (
-    action$
-      .debounceTime(100)
-      .ofType(REGION_CHANGE)
-      .mergeMap((action: Action): Observable<Business> => {
-        // $FlowFixMe
-        const { region } = action.payload;
-        const { latitude, longitude, latitudeDelta, longitudeDelta } = region;
+  return action$
+    .debounceTime(100)
+    .ofType(REGION_CHANGE)
+    .switchMap((action: Action): Observable<Business[]> => {
+      // $FlowFixMe
+      const { region } = action.payload;
+      const { latitude, longitude, latitudeDelta, longitudeDelta } = region;
 
-        return getBusinessesForRegion(
-          latitude,
-          longitude,
-          latitudeDelta,
-          longitudeDelta,
-        );
-      })
-      .map(addBusinesses)
-  );
+      return getBusinessesForRegion(
+        latitude,
+        longitude,
+        latitudeDelta,
+        longitudeDelta,
+      );
+    })
+    .map(addBusinesses);
 };
 
 export default yelpEpic;
