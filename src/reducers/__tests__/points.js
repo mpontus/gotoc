@@ -1,7 +1,10 @@
 import { Map, Set } from 'immutable';
 import Quadtree from 'util/quadtree';
 import { addBusinesses } from 'actions/businesses';
-import pointsReducer, { makeGetBusinessesInRegion } from '../points';
+import pointsReducer, {
+  makeGetBusinessesInRegion,
+  makeGetClustersInRegion,
+} from '../points';
 
 describe('pointsReducer', () => {
   it('returns the initial state', () => {
@@ -15,8 +18,8 @@ describe('pointsReducer', () => {
 
   it('adds businesses to the index', () => {
     const action = addBusinesses([
-      { id: 'foo', coords: { latitude: 15, longitude: 15 } },
-      { id: 'bar', coords: { latitude: 17, longitude: 17 } },
+      { id: 'foo', coordinates: { latitude: 15, longitude: 15 } },
+      { id: 'bar', coordinates: { latitude: 17, longitude: 17 } },
     ]);
     const newState = pointsReducer(undefined, action);
 
@@ -25,8 +28,8 @@ describe('pointsReducer', () => {
 
   it('adds businesses to quadtree', () => {
     const action = addBusinesses([
-      { id: 'foo', coords: { latitude: 15, longitude: 15 } },
-      { id: 'bar', coords: { latitude: 17, longitude: 17 } },
+      { id: 'foo', coordinates: { latitude: 15, longitude: 15 } },
+      { id: 'bar', coordinates: { latitude: 17, longitude: 17 } },
     ]);
     const newState = pointsReducer(undefined, action);
 
@@ -42,8 +45,8 @@ describe('pointsReducer', () => {
       tree: Quadtree.create(0, 0, 10, 10),
     });
     const action = addBusinesses([
-      { id: 'foo', coords: { latitude: 2, longitude: 2 } },
-      { id: 'bar', coords: { latitude: 3, longitude: 3 } },
+      { id: 'foo', coordinates: { latitude: 2, longitude: 2 } },
+      { id: 'bar', coordinates: { latitude: 3, longitude: 3 } },
     ]);
     const newState = pointsReducer(state, action);
 
@@ -77,5 +80,73 @@ describe('makeGetBusinessesInRegion', () => {
     const businesses = getBusinessesInRegion(state, { region });
 
     expect(businesses).toEqual(['foo', 'bar']);
+  });
+});
+
+describe('makeGetClustersInRegion', () => {
+  it('should return clusters in the region', () => {
+    const state = Map({
+      businesses: Map({
+        1: { id: 'foo', coordinates: { latitude: 12, longitude: 12 } },
+        2: { id: 'bar', coordinates: { latitude: 14, longitude: 14 } },
+        3: { id: 'baz', coordinates: { latitude: 90, longitude: 90 } },
+      }),
+      points: Map({
+        tree: Quadtree.create(0, 0, 100, 100)
+          .insert(12, 12, '1')
+          .insert(14, 14, '2')
+          .insert(90, 90, '3'),
+      }),
+    });
+
+    const region = {
+      latitude: 50,
+      longitude: 50,
+      latitudeDelta: 100,
+      longitudeDelta: 100,
+    };
+    const result = makeGetClustersInRegion()(state, { region });
+
+    expect(result).toEqual([
+      {
+        x: 13,
+        y: 13,
+        points: [
+          {
+            x: 12,
+            y: 12,
+            coordinates: {
+              latitude: 12,
+              longitude: 12,
+            },
+            id: 'foo',
+          },
+          {
+            x: 14,
+            y: 14,
+            coordinates: {
+              latitude: 14,
+              longitude: 14,
+            },
+            id: 'bar',
+          },
+        ],
+      },
+      {
+        x: 90,
+        y: 90,
+        points: [
+          {
+            x: 90,
+            y: 90,
+            coordinates: {
+              latitude: 90,
+              longitude: 90,
+            },
+            id: 'baz',
+          },
+        ],
+      },
+    ]);
   });
 });

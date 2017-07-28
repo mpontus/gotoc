@@ -6,7 +6,9 @@ type Point = {
   y: number,
 };
 
-type Cluster = Point & {
+export type Cluster = {
+  x: number,
+  y: number,
   points: Point[],
 };
 
@@ -39,7 +41,7 @@ function cluster(
     grid[col][row].push(point);
   });
 
-  const clusters = [];
+  const clusters: Cluster[] = [];
 
   for (let col = 0; col < cols; col += 1) {
     if (grid[col]) {
@@ -51,7 +53,7 @@ function cluster(
             .map(f => cellPoints.map(f))
             .map(R.mean);
 
-          clusters.push({ x, y, cellPoints });
+          clusters.push({ x, y, points: cellPoints });
         }
       }
     }
