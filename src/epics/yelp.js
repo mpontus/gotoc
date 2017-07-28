@@ -1,4 +1,5 @@
 // @flow
+import type { ActionsObservable } from 'redux-observable';
 import { Observable } from 'rxjs';
 import { curry } from 'ramda';
 import type { Config } from 'types/Config';
@@ -78,7 +79,7 @@ const createBusinessesObservable = curry(
 );
 
 const yelpEpic = (
-  action$: Observable<Action>,
+  action$: ActionsObservable<Action>,
   store: any,
   { api, config }: { api: YelpApi, config: Config },
 ): Observable<Action> => {
@@ -87,7 +88,6 @@ const yelpEpic = (
   return (
     action$
       .debounceTime(100)
-      // $FlowFixMe
       .ofType(REGION_CHANGE)
       .mergeMap((action: Action): Observable<Business> => {
         // $FlowFixMe
