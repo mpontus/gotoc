@@ -4,7 +4,7 @@ import { pick } from 'ramda';
 import { handleActions } from 'redux-actions';
 import { createSelector } from 'reselect';
 import type { Config } from 'types/Config';
-import { getDeltasForRadius } from 'util/geolib';
+import { getDeltasForRadius } from 'util/geo';
 import { REGION_CHANGE } from '../actions/map';
 
 function getInitialState(config: Config) {

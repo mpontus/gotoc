@@ -1,5 +1,5 @@
 import geolib from 'geolib';
-import { getDeltasForRadius, getRadiusForRegion } from '../geolib';
+import { getDeltasForRadius, getRadiusForRegion } from '../geo';
 
 // Errors to the south, north, and right above equator
 const points = [
@@ -8,7 +8,7 @@ const points = [
   ['Wellington, New Zealand', -41.284526, 174.7712372],
 ];
 
-describe('geolib', () => {
+describe('geo utils', () => {
   describe('getDeltasForRadius', () => {
     points.forEach(([name, latitude, longitude]) => {
       test(`covers area around ${name}`, () => {

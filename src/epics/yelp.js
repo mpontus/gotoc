@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { curry } from 'ramda';
 import type { Config } from 'types/Config';
 import type { Business } from 'types/Business';
-import { getRadiusForRegion } from 'util/geolib';
+import { getRadiusForRegion } from 'util/geo';
 import { REGION_CHANGE } from '../actions/map';
 import { addBusinesses } from '../actions/businesses';
 import type YelpApi from '../api/yelp';
