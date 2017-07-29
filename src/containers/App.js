@@ -1,7 +1,6 @@
 // @flow
 import React from 'react';
 import { connect } from 'react-redux';
-import debounce from 'debounce';
 import MapView from 'components/MapView';
 import { getRegion } from 'reducers/map';
 import { getLocation } from 'reducers/location';
@@ -50,11 +49,11 @@ type Props = {
 };
 
 class App extends React.Component<void, Props, void> {
-  handleRegionChange = debounce(region => {
+  handleRegionChange = region => {
     const { latitude, longitude, latitudeDelta, longitudeDelta } = region;
 
     this.props.regionChange(latitude, longitude, latitudeDelta, longitudeDelta);
-  }, 100);
+  };
 
   render() {
     const { region, clusters } = this.props;
