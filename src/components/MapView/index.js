@@ -1,21 +1,16 @@
 // @flow
 import React from 'react';
 import { View, Text } from 'react-native';
-import Map from '../Map';
+import type { Marker } from 'components/Map';
+import Map from 'components/Map';
 import styles from './MapView.styles';
-import type { Business, Region } from './types';
+import type { Region } from './types';
 
 function noop() {}
 
-function createMarkerFromBusiness(business: Business) {
-  const { id, latitude, longitude } = business;
-
-  return { id, latitude, longitude };
-}
-
 type PropTypes = {
   region?: Region,
-  businesses: Business[],
+  markers: Marker[],
   onRegionChange?: (region: Region) => void,
 };
 
@@ -25,14 +20,14 @@ const defaultProps = {
 };
 
 // TODO Refactor, extract Container, Main, Status
-const MapView = ({ region, businesses, onRegionChange }: PropTypes) =>
+const MapView = ({ region, markers, onRegionChange }: PropTypes) =>
   region
     ? <View style={styles.container}>
       <Map
         style={styles.main}
         region={region}
         onRegionChange={onRegionChange}
-        markers={businesses.map(createMarkerFromBusiness)}
+        markers={markers}
       />
       <View style={styles.status}>
         <Text>

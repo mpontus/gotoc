@@ -19,15 +19,20 @@ function cluster(
 ): Cluster[] {
   const { cols, rows } = dimensions;
   const { minX, minY, maxX, maxY } = bbox;
+
+  // Size of each cell in theu nits of boundary box
   const [spanX, spanY] = [(maxX - minX) / cols, (maxY - minY) / rows];
+
+  // Boundary Box offset
+  const [offX, offY] = [minX % spanX, minY % spanY];
 
   const grid: Point[][][] = [];
 
   points.forEach(point => {
     const { x, y } = point;
     const [col, row] = [
-      Math.floor((x - minX) / spanX),
-      Math.floor((y - minY) / spanY),
+      Math.floor((x - minX + offX) / spanX),
+      Math.floor((y - minY + offY) / spanY),
     ];
 
     if (!grid[col]) {
@@ -43,9 +48,9 @@ function cluster(
 
   const clusters: Cluster[] = [];
 
-  for (let col = 0; col < cols; col += 1) {
+  for (let col = 0; col < cols + 1; col += 1) {
     if (grid[col]) {
-      for (let row = 0; row < rows; row += 1) {
+      for (let row = 0; row < rows + 1; row += 1) {
         if (grid[col][row]) {
           const cellPoints = grid[col][row];
           const [x, y] = ['x', 'y']

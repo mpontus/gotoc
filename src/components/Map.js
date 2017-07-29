@@ -2,7 +2,9 @@
 import React from 'react';
 import MapView from 'react-native-maps';
 
-type Marker = {
+export type Marker = {
+  id: number | string,
+  name: string,
   latitude: number,
   longitude: number,
 };
@@ -21,11 +23,11 @@ const Map = ({ markers, ...rest }: Props): React.Element<any> =>
     showsPointsOfInterest={false}
     loadingEnabled
   >
-    {markers.map(({ id, latitude, longitude }) =>
+    {markers.map(({ id, name, latitude, longitude }) =>
       (<MapView.Marker
         key={id}
         coordinate={{ latitude, longitude }}
-        title="Foo"
+        title={name}
       />),
     )}
   </MapView>);

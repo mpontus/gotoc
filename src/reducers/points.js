@@ -4,13 +4,13 @@ import { handleActions } from 'redux-actions';
 import { createSelector } from 'reselect';
 import { prop } from 'ramda';
 import Quadtree from 'util/quadtree';
-import cluster from 'util/clustering';
-import type { Cluster } from 'util/clustering';
+import clusterPoints from 'util/clustering';
 import { getBusinesses } from 'reducers/businesses';
 import { BUSINESSES_ADDED } from 'actions/businesses';
 import type { Action } from 'actions/types';
 import type { Business } from 'types/Business';
 import type { Region } from 'types/Region';
+import type { Cluster } from 'types/Cluster';
 
 const initialState = Map({
   index: Set(),
@@ -88,7 +88,7 @@ const businessToPoint = business => {
   const { latitude, longitude } = business.coordinates;
 
   return {
-    ...business,
+    business,
     x: longitude,
     y: latitude,
   };
@@ -107,7 +107,23 @@ export const makeGetClustersInRegion = () =>
         maxY: latitude + latitudeDelta / 2,
       };
 
-      return cluster(dimensions, bbox, businesses.map(businessToPoint));
+      return clusterPoints(
+        dimensions,
+        bbox,
+        businesses.map(businessToPoint),
+      ).map(cluster => {
+        const points = cluster.points.map(
+          point =>
+            // $FlowFixMe
+            point.business,
+        );
+
+        return {
+          latitude: cluster.y,
+          longitude: cluster.x,
+          points,
+        };
+      });
     },
   );
 
