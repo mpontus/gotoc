@@ -1,24 +1,37 @@
 // @flow
 import React from 'react';
 import { connect } from 'react-redux';
+import debounce from 'debounce';
 import MapView from 'components/MapView';
 import { getRegion } from 'reducers/map';
 import { getLocation } from 'reducers/location';
-import { makeGetBusinessesInRegion } from 'reducers/points';
+import { makeGetClustersInRegion } from 'reducers/points';
 import { regionChange } from 'actions/map';
 import type { Location } from 'types/Location';
 import type { Region } from 'types/Region';
-import type { Business } from 'types/Business';
+import type { Cluster } from 'types/Cluster';
+
+const scaleRegion = factor => region => {
+  const { latitude, longitude, latitudeDelta, longitudeDelta } = region;
+
+  return {
+    latitude,
+    longitude,
+    latitudeDelta: latitudeDelta * factor,
+    longitudeDelta: longitudeDelta * factor,
+  };
+};
 
 const mapStateToProps = () => {
-  const getBusinessesInRegion = makeGetBusinessesInRegion();
+  const getClustersInRegion = makeGetClustersInRegion();
 
   return state => {
     const region = getRegion(state);
+    const smallerRegion = scaleRegion(1.2)(region);
     const location = getLocation(state);
-    const businesses = getBusinessesInRegion(state, { region });
+    const clusters = getClustersInRegion(state, { region: smallerRegion });
 
-    return { region, location, businesses };
+    return { region, location, clusters };
   };
 };
 const mapDispatchToProps = { regionChange };
@@ -27,7 +40,7 @@ const enhance = connect(mapStateToProps, mapDispatchToProps);
 type Props = {
   location: Location,
   region: Region,
-  businesses: Business[],
+  clusters: Cluster[],
   regionChange: (
     latitude: number,
     longitude: number,
@@ -37,22 +50,26 @@ type Props = {
 };
 
 class App extends React.Component<void, Props, void> {
-  handleRegionChange = region => {
+  handleRegionChange = debounce(region => {
     const { latitude, longitude, latitudeDelta, longitudeDelta } = region;
 
     this.props.regionChange(latitude, longitude, latitudeDelta, longitudeDelta);
-  };
+  }, 100);
 
   render() {
-    const { region, businesses } = this.props;
+    const { region, clusters } = this.props;
+
+    const markers = clusters.map((cluster, index) => ({
+      id: index,
+      latitude: cluster.latitude,
+      longitude: cluster.longitude,
+      name: `${cluster.points.length}`,
+    }));
 
     return (
       <MapView
         region={region}
-        businesses={businesses.map(business => ({
-          ...business,
-          ...business.coordinates,
-        }))}
+        markers={markers}
         onRegionChange={this.handleRegionChange}
       />
     );

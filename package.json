@@ -43,6 +43,7 @@
     "preset": "jest-expo"
   },
   "dependencies": {
+    "debounce": "^1.0.2",
     "flow": "^0.2.3",
     "geolib": "^2.0.22",
     "immutable": "^3.8.1",
