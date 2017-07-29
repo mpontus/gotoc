@@ -99,7 +99,7 @@ export const makeGetClustersInRegion = () =>
     [makeGetBusinessesInRegion(), getRegionFromProps],
     (businesses: Business[], region: Region): Cluster[] => {
       const { latitude, longitude, latitudeDelta, longitudeDelta } = region;
-      const dimensions = { cols: 3, rows: 3 };
+      const dimensions = { cols: 8, rows: 8 };
       const bbox = {
         minX: longitude - longitudeDelta / 2,
         minY: latitude - latitudeDelta / 2,
