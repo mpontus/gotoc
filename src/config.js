@@ -8,7 +8,7 @@ const config: Config = {
   // defaultLongitude: 37.3523254,
   defaultRadius: 1000,
   maxConsecutiveRequests: 5,
-  businessesPerAction: 10,
+  businessesPerAction: 50,
 };
 
 export default config;
