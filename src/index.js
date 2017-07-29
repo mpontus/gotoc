@@ -12,8 +12,6 @@ import './ReactotronConfig';
 const api = new YelpApi(Config.YELP_CLIENT_ID, Config.YELP_CLIENT_SECRET);
 const store = configureStore(undefined, api, config);
 
-store.dispatch({ type: 'foo' });
-
 const Root = () =>
   (<Provider store={store}>
     <App />
