@@ -11,9 +11,14 @@ export type Marker = {
 
 type Props = {
   markers: Marker[],
+  children?: any,
 };
 
-const Map = ({ markers, ...rest }: Props): React.Element<any> =>
+const defaultProps = {
+  children: [],
+};
+
+const Map = ({ markers, children, ...rest }: Props): React.Element<any> =>
   (<MapView
     {...rest}
     showsUserLocation
@@ -30,6 +35,9 @@ const Map = ({ markers, ...rest }: Props): React.Element<any> =>
         title={name}
       />),
     )}
+    {children}
   </MapView>);
+
+Map.defaultProps = defaultProps;
 
 export default Map;

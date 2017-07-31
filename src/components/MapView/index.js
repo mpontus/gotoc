@@ -20,7 +20,7 @@ const defaultProps = {
 };
 
 // TODO Refactor, extract Container, Main, Status
-const MapView = ({ region, markers, onRegionChange }: PropTypes) =>
+const MapView = ({ region, markers, onRegionChange, ...rest }: PropTypes) =>
   region
     ? <View style={styles.container}>
       <Map
@@ -28,6 +28,7 @@ const MapView = ({ region, markers, onRegionChange }: PropTypes) =>
         region={region}
         onRegionChange={onRegionChange}
         markers={markers}
+        {...rest}
       />
       <View style={styles.status}>
         <Text>
