@@ -9,10 +9,10 @@ import type { Region } from './types';
 function noop() {}
 
 type PropTypes = {
-  region?: Region,
+  region?: ?Region,
   markers: Marker[],
+  debug?: ?React.Element<*>,
   onRegionChange?: (region: Region) => void,
-  debug?: Element,
 };
 
 const defaultProps = {

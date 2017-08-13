@@ -1,6 +1,7 @@
 // @flow
 import R from 'ramda';
 import React from 'react';
+import { Text } from 'react-native';
 import { Polyline } from 'react-native-maps';
 import { connect } from 'react-redux';
 import MapView from 'components/MapView';
@@ -8,7 +9,7 @@ import { getRegion } from 'reducers/map';
 import { getLocation } from 'reducers/location';
 import { makeGetClustersInRegion } from 'reducers/points';
 import { regionChange } from 'actions/map';
-import { getRegionBoundaries } from 'util/map';
+import { getRegionBoundaries, getZoomLevel } from 'util/map';
 import type { Location } from 'types/Location';
 import type { Region } from 'types/Region';
 import type { Cluster } from 'types/Cluster';
@@ -57,6 +58,10 @@ type Props = {
   },
 };
 
+type State = {
+  mapWidth: ?number,
+};
+
 const renderBoundaries = (region: Region) => {
   const [minLat, minLng, maxLat, maxLng] = getRegionBoundaries(region);
 
@@ -70,11 +75,23 @@ const renderBoundaries = (region: Region) => {
   return <Polyline coordinates={[nw, ne, se, sw, nw]} strokeColor="#F00" />;
 };
 
-class App extends React.Component<void, Props, void> {
+class App extends React.Component<void, Props, State> {
+  state = {
+    mapWidth: null,
+  };
+
   handleRegionChange = region => {
     const { latitude, longitude, latitudeDelta, longitudeDelta } = region;
 
     this.props.regionChange(latitude, longitude, latitudeDelta, longitudeDelta);
+  };
+
+  handleMapLayout = event => {
+    const { width } = event.nativeEvent.layout;
+
+    this.setState({
+      mapWidth: width,
+    });
   };
 
   renderClusterGrid(region: Region) {
@@ -120,6 +137,7 @@ class App extends React.Component<void, Props, void> {
 
   render() {
     const { region, clusters } = this.props;
+    const { mapWidth } = this.state;
 
     const markers = clusters.map((cluster, index) => ({
       id: index,
@@ -133,6 +151,14 @@ class App extends React.Component<void, Props, void> {
         region={region}
         markers={markers}
         onRegionChange={this.handleRegionChange}
+        debug={
+          region && mapWidth
+            ? <Text>
+              {getZoomLevel(region, mapWidth)}
+            </Text>
+            : null
+        }
+        onLayout={this.handleMapLayout}
       >
         {this.renderClusterGrid(this.props.activeRegion)}
         {renderBoundaries(this.props.activeRegion)}
