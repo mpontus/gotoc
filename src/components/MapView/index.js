@@ -12,6 +12,7 @@ type PropTypes = {
   region?: Region,
   markers: Marker[],
   onRegionChange?: (region: Region) => void,
+  debug: Element,
 };
 
 const defaultProps = {
@@ -20,7 +21,13 @@ const defaultProps = {
 };
 
 // TODO Refactor, extract Container, Main, Status
-const MapView = ({ region, markers, onRegionChange, ...rest }: PropTypes) =>
+const MapView = ({
+  region,
+  markers,
+  onRegionChange,
+  debug,
+  ...rest
+}: PropTypes) =>
   region
     ? <View style={styles.container}>
       <Map
@@ -35,9 +42,10 @@ const MapView = ({ region, markers, onRegionChange, ...rest }: PropTypes) =>
             Lat: {region.latitude}, Lng: {region.longitude}
         </Text>
         <Text>
-            LatD: {region.latitudeDelta.toFixed(5)}, LngD:{' '}
-          {region.longitudeDelta.toFixed(5)}
+            LatD: {region.latitudeDelta.toFixed(12)}, LngD:{' '}
+          {region.longitudeDelta.toFixed(12)}
         </Text>
+        {debug}
       </View>
     </View>
     : <View style={styles.container}>
