@@ -8,6 +8,7 @@ import { getRegion } from 'reducers/map';
 import { getLocation } from 'reducers/location';
 import { makeGetClustersInRegion } from 'reducers/points';
 import { regionChange } from 'actions/map';
+import { getRegionBoundaries } from 'util/map';
 import type { Location } from 'types/Location';
 import type { Region } from 'types/Region';
 import type { Cluster } from 'types/Cluster';
@@ -57,13 +58,8 @@ type Props = {
 };
 
 const renderBoundaries = (region: Region) => {
-  const { latitude, longitude, latitudeDelta, longitudeDelta } = region;
-  const [minLat, minLng, maxLat, maxLng] = [
-    latitude - latitudeDelta / 2,
-    longitude - longitudeDelta / 2,
-    latitude + latitudeDelta / 2,
-    longitude + longitudeDelta / 2,
-  ];
+  const [minLat, minLng, maxLat, maxLng] = getRegionBoundaries(region);
+
   const [nw, ne, sw, se] = [
     { latitude: minLat, longitude: minLng },
     { latitude: minLat, longitude: maxLng },
@@ -84,14 +80,7 @@ class App extends React.Component<void, Props, void> {
   renderClusterGrid(region: Region) {
     const { clustering } = this.props;
     const { rows, cols } = clustering;
-    const { latitude, longitude, latitudeDelta, longitudeDelta } = region;
-
-    const [minLat, minLng, maxLat, maxLng] = [
-      latitude - latitudeDelta / 2,
-      longitude - longitudeDelta / 2,
-      latitude + latitudeDelta / 2,
-      longitude + longitudeDelta / 2,
-    ];
+    const [minLat, minLng, maxLat, maxLng] = getRegionBoundaries(region);
 
     const [hbreaks, vbreaks] = [
       [region.latitude, region.latitudeDelta, rows],

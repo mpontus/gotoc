@@ -7,6 +7,7 @@ import Quadtree from 'util/quadtree';
 import clusterPoints from 'util/clustering';
 import { getBusinesses } from 'reducers/businesses';
 import { BUSINESSES_ADDED } from 'actions/businesses';
+import { getRegionBoundaries } from 'util/map';
 import type { Action } from 'actions/types';
 import type { Business } from 'types/Business';
 import type { Region } from 'types/Region';
@@ -71,15 +72,11 @@ export const makeGetBusinessesInRegion = () =>
   createSelector(
     [getPoints, getBusinesses, getRegionFromProps],
     (points, businesses: Map<string, Business>, region: Region): Business[] => {
-      const { latitude, longitude, latitudeDelta, longitudeDelta } = region;
+      const { latitudeDelta, longitudeDelta } = region;
+      const boundaries = getRegionBoundaries(region);
 
       return points
-        .queryRange(
-          latitude - latitudeDelta / 2,
-          longitude - longitudeDelta / 2,
-          latitudeDelta,
-          longitudeDelta,
-        )
+        .queryRange(boundaries[2], boundaries[1], latitudeDelta, longitudeDelta)
         .map(id => businesses.get(id));
     },
   );
@@ -98,14 +95,9 @@ export const makeGetClustersInRegion = () =>
   createSelector(
     [makeGetBusinessesInRegion(), getRegionFromProps],
     (businesses: Business[], region: Region): Cluster[] => {
-      const { latitude, longitude, latitudeDelta, longitudeDelta } = region;
       const dimensions = { cols: 4, rows: 4 };
-      const bbox = {
-        minX: longitude - longitudeDelta / 2,
-        minY: latitude - latitudeDelta / 2,
-        maxX: longitude + longitudeDelta / 2,
-        maxY: latitude + latitudeDelta / 2,
-      };
+      const [maxX, minY, minX, maxY] = getRegionBoundaries(region);
+      const bbox = { minX, minY, maxX, maxY };
 
       return clusterPoints(
         dimensions,
