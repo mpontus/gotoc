@@ -109,12 +109,10 @@ describe('makeGetClustersInRegion', () => {
 
     expect(result).toEqual([
       {
-        x: 13,
-        y: 13,
+        latitude: 13,
+        longitude: 13,
         points: [
           {
-            x: 12,
-            y: 12,
             coordinates: {
               latitude: 12,
               longitude: 12,
@@ -122,8 +120,6 @@ describe('makeGetClustersInRegion', () => {
             id: 'foo',
           },
           {
-            x: 14,
-            y: 14,
             coordinates: {
               latitude: 14,
               longitude: 14,
@@ -133,12 +129,10 @@ describe('makeGetClustersInRegion', () => {
         ],
       },
       {
-        x: 90,
-        y: 90,
+        latitude: 90,
+        longitude: 90,
         points: [
           {
-            x: 90,
-            y: 90,
             coordinates: {
               latitude: 90,
               longitude: 90,

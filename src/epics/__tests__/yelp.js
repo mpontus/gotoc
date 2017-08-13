@@ -2,10 +2,10 @@ import { Observable } from 'rxjs';
 import { ActionsObservable } from 'redux-observable';
 import R from 'ramda';
 import { regionChange } from 'actions/map';
-import { getRadiusForRegion } from 'util/geolib';
+import { getRadiusForRegion } from 'util/geo';
 import epic, { exhaustiveFetch } from '../yelp';
 
-jest.mock('util/geolib');
+jest.mock('util/geo');
 
 const makeResponse = R.compose(
   Promise.resolve,

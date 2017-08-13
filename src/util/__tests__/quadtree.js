@@ -110,7 +110,7 @@ describe('Quadtree', () => {
   it('returns points in range', () => {
     const [data1, data2, data3] = ['foo', 'bar', 'baz'];
 
-    const qt = Quadtree.create(100, 100)
+    const qt = Quadtree.create(0, 0, 100, 100)
       .insert(30, 30, data1)
       .insert(50, 50, data2)
       .insert(70, 70, data3);

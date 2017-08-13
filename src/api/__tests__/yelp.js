@@ -1,4 +1,5 @@
 import withMock from 'with-fetch-mock';
+import qs from 'query-string';
 import YelpApi from '../yelp';
 
 const api = new YelpApi('foo', 'bar');
@@ -15,7 +16,7 @@ it('must authenticate with yelp when making a request', () =>
     (url, options) => {
       expect(url).toBe('https://api.yelp.com/oauth2/token');
       expect(options.method).toBe('POST');
-      expect(JSON.parse(options.body)).toEqual({
+      expect(qs.parse(options.body)).toEqual({
         grant_type: 'client_credentials',
         client_id: 'foo',
         client_secret: 'bar',

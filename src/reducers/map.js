@@ -23,7 +23,7 @@ function getInitialState(config: Config) {
   });
 }
 
-const mapReducerFactory = (config: Config) =>
+const makeMapReducer = (config: Config) =>
   handleActions(
     {
       [REGION_CHANGE]: (state, action) => {
@@ -41,7 +41,7 @@ const mapReducerFactory = (config: Config) =>
     getInitialState(config),
   );
 
-export default mapReducerFactory;
+export default makeMapReducer;
 
 export const getRegion = createSelector(
   state => state.get('map'),
