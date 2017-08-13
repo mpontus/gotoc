@@ -12,12 +12,13 @@ type PropTypes = {
   region?: Region,
   markers: Marker[],
   onRegionChange?: (region: Region) => void,
-  debug: Element,
+  debug?: Element,
 };
 
 const defaultProps = {
   region: null,
   onRegionChange: noop,
+  debug: null,
 };
 
 // TODO Refactor, extract Container, Main, Status

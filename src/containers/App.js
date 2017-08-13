@@ -1,7 +1,6 @@
 // @flow
 import R from 'ramda';
 import React from 'react';
-import { View } from 'react-native';
 import { Polyline } from 'react-native-maps';
 import { connect } from 'react-redux';
 import MapView from 'components/MapView';
@@ -57,7 +56,23 @@ type Props = {
   },
 };
 
-const norm = n => (n * 1000).toFixed(2);
+const renderBoundaries = (region: Region) => {
+  const { latitude, longitude, latitudeDelta, longitudeDelta } = region;
+  const [minLat, minLng, maxLat, maxLng] = [
+    latitude - latitudeDelta / 2,
+    longitude - longitudeDelta / 2,
+    latitude + latitudeDelta / 2,
+    longitude + longitudeDelta / 2,
+  ];
+  const [nw, ne, sw, se] = [
+    { latitude: minLat, longitude: minLng },
+    { latitude: minLat, longitude: maxLng },
+    { latitude: maxLat, longitude: minLng },
+    { latitude: maxLat, longitude: maxLng },
+  ];
+
+  return <Polyline coordinates={[nw, ne, se, sw, nw]} strokeColor="#F00" />;
+};
 
 class App extends React.Component<void, Props, void> {
   handleRegionChange = region => {
@@ -93,10 +108,6 @@ class App extends React.Component<void, Props, void> {
       return breakpoints;
     });
 
-    console.tron.log(norm(region.longitude - region.longitudeDelta / 2));
-    console.tron.log(norm(region.longitude + region.longitudeDelta / 2));
-    console.tron.log(vbreaks.map(norm));
-
     const vlines = vbreaks.map(lng => ({
       id: `lng:${lng}`,
       coordinates: [
@@ -118,24 +129,6 @@ class App extends React.Component<void, Props, void> {
     );
   }
 
-  renderBoundaries(region: Region) {
-    const { latitude, longitude, latitudeDelta, longitudeDelta } = region;
-    const [minLat, minLng, maxLat, maxLng] = [
-      latitude - latitudeDelta / 2,
-      longitude - longitudeDelta / 2,
-      latitude + latitudeDelta / 2,
-      longitude + longitudeDelta / 2,
-    ];
-    const [nw, ne, sw, se] = [
-      { latitude: minLat, longitude: minLng },
-      { latitude: minLat, longitude: maxLng },
-      { latitude: maxLat, longitude: minLng },
-      { latitude: maxLat, longitude: maxLng },
-    ];
-
-    return <Polyline coordinates={[nw, ne, se, sw, nw]} strokeColor="#F00" />;
-  }
-
   render() {
     const { region, clusters } = this.props;
 
@@ -153,7 +146,7 @@ class App extends React.Component<void, Props, void> {
         onRegionChange={this.handleRegionChange}
       >
         {this.renderClusterGrid(this.props.activeRegion)}
-        {this.renderBoundaries(this.props.activeRegion)}
+        {renderBoundaries(this.props.activeRegion)}
       </MapView>
     );
   }
