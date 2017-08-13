@@ -6,11 +6,16 @@
     "prettier"
   ],
   "plugins": [
-    "flowtype"
+    "flowtype",
+    "eslint-comments"
   ],
   "rules": {
     "react/no-unused-prop-types": 0,
-    "react/jsx-filename-extension": 0
+    "react/jsx-filename-extension": 0,
+    "eslint-comments/no-duplicate-disable": "error",
+    "eslint-comments/no-unlimited-disable": "error",
+    "eslint-comments/no-unused-disable": "error",
+    "eslint-comments/no-unused-enable": "error"
   },
   "env": {
     "browser": true,
