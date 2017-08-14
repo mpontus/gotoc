@@ -187,7 +187,7 @@ describe('exhaustiveFetch', () => {
 
     getter.mockReturnValueOnce(Promise.resolve({ count: 0 }));
 
-    const result = exhaustiveFetch(getter);
+    const result = exhaustiveFetch(getter, response => response.count);
 
     expect(result).toBeInstanceOf(Observable);
   });
@@ -199,7 +199,12 @@ describe('exhaustiveFetch', () => {
       .mockReturnValueOnce(Promise.resolve({ count: 1 }))
       .mockReturnValueOnce(Promise.resolve({ count: 0 }));
 
-    const emittedValues = await exhaustiveFetch(getter).toArray().toPromise();
+    const emittedValues = await exhaustiveFetch(
+      getter,
+      response => response.count,
+    )
+      .toArray()
+      .toPromise();
 
     expect(emittedValues).toEqual([{ count: 1 }, { count: 0 }]);
   });
@@ -209,9 +214,25 @@ describe('exhaustiveFetch', () => {
 
     getter.mockReturnValueOnce(Promise.resolve({ count: 0 }));
 
-    await exhaustiveFetch(getter).toPromise();
+    await exhaustiveFetch(getter, response => response.count).toPromise();
 
     expect(getter).toHaveBeenCalledWith(0);
+  });
+
+  it('must support custom count getter', async () => {
+    const fetcher = jest.fn();
+
+    fetcher
+      .mockReturnValueOnce(Promise.resolve({ entries: ['foo', 'bar'] }))
+      .mockReturnValueOnce(Promise.resolve({ entries: ['baz'] }))
+      .mockReturnValueOnce(Promise.resolve({ entries: [] }));
+
+    await exhaustiveFetch(fetcher, r => r.entries.length).toPromise();
+
+    expect(fetcher).toHaveBeenCalledTimes(3);
+    expect(fetcher).toHaveBeenCalledWith(0);
+    expect(fetcher).toHaveBeenCalledWith(2);
+    expect(fetcher).toHaveBeenCalledWith(3);
   });
 
   it('must call the getter as long as count is positive', async () => {
@@ -222,7 +243,7 @@ describe('exhaustiveFetch', () => {
       .mockReturnValueOnce(Promise.resolve({ count: 1 }))
       .mockReturnValueOnce(Promise.resolve({ count: 0 }));
 
-    await exhaustiveFetch(getter).toPromise();
+    await exhaustiveFetch(getter, response => response.count).toPromise();
 
     expect(getter).toHaveBeenCalledTimes(3);
     expect(getter).toHaveBeenCalledWith(0);
@@ -238,7 +259,12 @@ describe('exhaustiveFetch', () => {
       .mockReturnValueOnce(Promise.resolve({ count: 1, bar: 'baz' }))
       .mockReturnValueOnce(Promise.resolve({ count: 0, baz: 'foo' }));
 
-    const emittedValues = await exhaustiveFetch(getter).toArray().toPromise();
+    const emittedValues = await exhaustiveFetch(
+      getter,
+      response => response.count,
+    )
+      .toArray()
+      .toPromise();
 
     expect(emittedValues).toEqual([
       { count: 2, foo: 'bar' },
@@ -253,7 +279,9 @@ describe('exhaustiveFetch', () => {
 
     getter.mockReturnValue(Promise.resolve({ count: 1 }));
 
-    await exhaustiveFetch(getter).take(limit).toPromise();
+    await exhaustiveFetch(getter, response => response.count)
+      .take(limit)
+      .toPromise();
 
     return new Promise((resolve, reject) => {
       setTimeout(() => {
