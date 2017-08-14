@@ -55,7 +55,7 @@ describe('pointsReducer', () => {
 });
 
 describe('makeGetBusinessesInRegion', () => {
-  it('should return businesse in region', () => {
+  it('should return businesses in region', () => {
     const state = Map({
       businesses: Map({
         1: 'foo',

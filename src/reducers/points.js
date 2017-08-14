@@ -76,7 +76,7 @@ export const makeGetBusinessesInRegion = () =>
       const boundaries = getRegionBoundaries(region);
 
       return points
-        .queryRange(boundaries[2], boundaries[1], latitudeDelta, longitudeDelta)
+        .queryRange(boundaries[1], boundaries[0], latitudeDelta, longitudeDelta)
         .map(id => businesses.get(id));
     },
   );
@@ -96,7 +96,7 @@ export const makeGetClustersInRegion = () =>
     [makeGetBusinessesInRegion(), getRegionFromProps],
     (businesses: Business[], region: Region): Cluster[] => {
       const dimensions = { cols: 4, rows: 4 };
-      const [maxX, minY, minX, maxY] = getRegionBoundaries(region);
+      const [minY, minX, maxY, maxX] = getRegionBoundaries(region);
       const bbox = { minX, minY, maxX, maxY };
 
       return clusterPoints(

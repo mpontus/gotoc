@@ -57,7 +57,7 @@ export function getRadiusForRegion(
   longitudeDelta: number,
 ) {
   const start = { latitude, longitude };
-  const [n, w, s, e] = getRegionBoundaries({
+  const [w, s, e, n] = getRegionBoundaries({
     latitude,
     longitude,
     latitudeDelta,

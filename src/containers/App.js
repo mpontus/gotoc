@@ -63,7 +63,7 @@ type State = {
 };
 
 const renderBoundaries = (region: Region) => {
-  const [minLat, minLng, maxLat, maxLng] = getRegionBoundaries(region);
+  const [minLng, minLat, maxLng, maxLat] = getRegionBoundaries(region);
 
   const [nw, ne, sw, se] = [
     { latitude: minLat, longitude: minLng },
@@ -97,7 +97,7 @@ class App extends React.Component<void, Props, State> {
   renderClusterGrid(region: Region) {
     const { clustering } = this.props;
     const { rows, cols } = clustering;
-    const [minLat, minLng, maxLat, maxLng] = getRegionBoundaries(region);
+    const [minLng, minLat, maxLng, maxLat] = getRegionBoundaries(region);
 
     const [hbreaks, vbreaks] = [
       [region.latitude, region.latitudeDelta, rows],
