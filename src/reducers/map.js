@@ -27,7 +27,7 @@ const makeMapReducer = (config: Config) =>
   handleActions(
     {
       [REGION_CHANGE]: (state, action) => {
-        const { region } = action.payload;
+        const region = action.payload;
 
         return Map({
           default: false,

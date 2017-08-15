@@ -78,16 +78,7 @@ type Props = {
   region: Region,
   activeRegion: Region,
   clusters: Cluster[],
-  regionChange: (
-    latitude: number,
-    longitude: number,
-    latitudeDelta: number,
-    longitudeDelta: number,
-  ) => void,
-  clustering: {
-    rows: number,
-    cols: number,
-  },
+  regionChange: (region: Region) => void,
   // TODO: remove debug
   index: any,
   businesses: Array<any>,
@@ -117,10 +108,8 @@ class App extends React.Component<void, Props, State> {
     return clusters;
   }
 
-  handleRegionChange = region => {
-    const { latitude, longitude, latitudeDelta, longitudeDelta } = region;
-
-    this.props.regionChange(latitude, longitude, latitudeDelta, longitudeDelta);
+  handleRegionChange = (region: Region) => {
+    this.props.regionChange(region);
   };
 
   handleMapLayout = event => {

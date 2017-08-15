@@ -34,7 +34,12 @@ describe('Yelp Epic', () => {
       return 18;
     });
 
-    const action = regionChange(1, 2, 3, 4);
+    const action = regionChange({
+      latitude: 1,
+      longitude: 2,
+      latitudeDelta: 3,
+      longitudeDelta: 4,
+    });
     const input$ = ActionsObservable.of(action);
 
     const api = {
@@ -65,7 +70,12 @@ describe('Yelp Epic', () => {
   });
 
   it('must query the api until all pages are exhausted', async () => {
-    const action = regionChange(1, 2, 3, 4);
+    const action = regionChange({
+      latitude: 1,
+      longitude: 2,
+      latitudeDelta: 3,
+      longitudeDelta: 4,
+    });
     const input$ = ActionsObservable.of(action);
 
     const api = {
@@ -106,7 +116,12 @@ describe('Yelp Epic', () => {
   });
 
   it('must limit the amount of requests per region change', async () => {
-    const action = regionChange(1, 2, 3, 4);
+    const action = regionChange({
+      latitude: 1,
+      longitude: 2,
+      latitudeDelta: 3,
+      longitudeDelta: 4,
+    });
     const input$ = ActionsObservable.of(action);
 
     const api = {
@@ -155,11 +170,25 @@ describe('Yelp Epic', () => {
 
     const input$ = new ActionsObservable(
       Observable.create(observer => {
-        observer.next(regionChange(1, 2, 3, 4));
+        observer.next(
+          regionChange({
+            latitude: 1,
+            longitude: 2,
+            latitudeDelta: 3,
+            longitudeDelta: 4,
+          }),
+        );
 
         // Simulate delayed action
         setTimeout(() => {
-          observer.next(regionChange(5, 6, 7, 8));
+          observer.next(
+            regionChange({
+              latitude: 5,
+              longitude: 6,
+              latitudeDelta: 7,
+              longitudeDelta: 8,
+            }),
+          );
           observer.complete();
         }, 450);
       }),
