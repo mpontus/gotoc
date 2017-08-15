@@ -12,6 +12,13 @@ import './ReactotronConfig';
 const api = new YelpApi(Config.YELP_CLIENT_ID, Config.YELP_CLIENT_SECRET);
 const store = configureStore(undefined, api, config);
 
+if (process.env.NODE_ENV === 'development') {
+  // eslint-disable-next-line global-require
+  const debug = require('./debug').default;
+
+  debug(store);
+}
+
 const Root = () =>
   (<Provider store={store}>
     <App />
