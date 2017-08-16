@@ -1,6 +1,6 @@
 // @flow
 import React from 'react';
-import { Text } from 'react-native';
+import { View, Text } from 'react-native';
 import { Marker, Polyline } from 'react-native-maps';
 import { connect } from 'react-redux';
 import supercluster from 'supercluster';
@@ -120,9 +120,43 @@ class App extends React.Component<void, Props, State> {
     });
   };
 
+  renderDebug() {
+    if (!this.props.region) {
+      return null;
+    }
+
+    const { latitudeDelta } = this.props.region;
+    // eslint-disable-next-line no-unused-vars
+    const [westLng, southLat, eastLng, northLat] = getRegionBoundaries(
+      this.props.region,
+    );
+
+    const deg2rad = Math.PI / 180;
+    const project = lat => Math.log(Math.tan(lat * deg2rad / 2 + Math.PI / 4));
+
+    return (
+      <View>
+        <View>
+          <Text>
+            {(project(northLat) - project(southLat)).toFixed(5)}
+          </Text>
+        </View>
+        <View>
+          <Text>
+            {latitudeDelta}
+          </Text>
+        </View>
+        <View>
+          <Text>
+            {northLat - southLat}
+          </Text>
+        </View>
+      </View>
+    );
+  }
+
   render() {
     const { region, businesses } = this.props;
-    const { mapWidth } = this.state;
     const clusters = this.getClusters();
 
     return (
@@ -130,13 +164,7 @@ class App extends React.Component<void, Props, State> {
         region={region}
         markers={[]}
         onRegionChange={this.handleRegionChange}
-        debug={
-          region && mapWidth
-            ? <Text>
-              {getZoomLevel(region, mapWidth)}
-            </Text>
-            : null
-        }
+        debug={this.renderDebug()}
         onLayout={this.handleMapLayout}
       >
         {clusters.map(cluster => {
@@ -164,7 +192,7 @@ class App extends React.Component<void, Props, State> {
             />
           );
         })}
-        {renderBoundaries(scaleRegion(0.8)(region))}
+        {renderBoundaries(scaleRegion(0.95)(region))}
       </MapView>
     );
   }
