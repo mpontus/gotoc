@@ -1,7 +1,26 @@
 // @flow
+import math from 'mathjs';
 import type { Region } from 'types/Region';
 
 const GLOBE_WIDTH = 256;
+
+// I don't know how this works:
+// https://math.stackexchange.com/questions/2391556/mercator-projection-finding-boundaries-for-latitude-and-latitudedelta
+const [computeT, computeU, computeS, computeN] = math.compile([
+  'tan(lat/2 + pi/4)',
+  '(t + 1/t)/2 * tan(latD/2)',
+  '2 * atan(t / (u + sqrt(1 + u^2))) - pi/2',
+  '2 * atan(t * (u + sqrt(1 + u^2))) - pi/2',
+]);
+
+function computeLatBounds(lat, latD) {
+  const t = computeT.eval({ lat });
+  const u = computeU.eval({ t, latD });
+  const latS = computeS.eval({ t, u });
+  const latN = computeN.eval({ t, u });
+
+  return [latS, latN];
+}
 
 export function getRegionBoundaries(region: Region) {
   const { latitude, longitude, latitudeDelta, longitudeDelta } = region;
@@ -14,19 +33,10 @@ export function getRegionBoundaries(region: Region) {
   const deg2rad = Math.PI / 180;
   const rad2deg = 180 / Math.PI;
 
-  const lat = latitude * deg2rad;
-  const latD = latitudeDelta * deg2rad;
-
-  // I don't know how this works:
-  // https://math.stackexchange.com/questions/2391556/mercator-projection-finding-boundaries-for-latitude-and-latitudedelta
-  const t = Math.tan(lat / 2 + Math.PI / 4);
-  const u = 1 / 2 * (t + 1 / t) * Math.tan(latD / 2);
-  const j = u + Math.sqrt(1 + u * u);
-  const latS = 2 * Math.atan(t / j) - Math.PI / 2;
-  const latN = 2 * Math.atan(t * j) - Math.PI / 2;
-
-  const southLat = latS * rad2deg;
-  const northLat = latN * rad2deg;
+  const [southLat, northLat] = computeLatBounds(
+    latitude * deg2rad,
+    latitudeDelta * deg2rad,
+  ).map(rad => rad * rad2deg);
 
   return [westLng, southLat, eastLng, northLat];
 }
