@@ -39,13 +39,6 @@ const MapView = ({
         {...rest}
       />
       <View style={styles.status}>
-        <Text>
-            Lat: {region.latitude}, Lng: {region.longitude}
-        </Text>
-        <Text>
-            LatD: {region.latitudeDelta.toFixed(12)}, LngD:{' '}
-          {region.longitudeDelta.toFixed(12)}
-        </Text>
         {debug}
       </View>
     </View>
