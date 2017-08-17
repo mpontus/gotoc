@@ -1,6 +1,6 @@
 // @flow
 import { computeDestinationPoint, getDistance } from 'geolib';
-import { getRegionBoundaries } from './map';
+import { getRegionEdges } from './map';
 
 /**
  * Calculate latitude and longitude deltas for radius around the point.
@@ -57,7 +57,7 @@ export function getRadiusForRegion(
   longitudeDelta: number,
 ) {
   const start = { latitude, longitude };
-  const [w, s, e, n] = getRegionBoundaries({
+  const [w, s, e, n] = getRegionEdges({
     latitude,
     longitude,
     latitudeDelta,

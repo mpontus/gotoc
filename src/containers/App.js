@@ -9,7 +9,7 @@ import { getRegion } from 'reducers/map';
 import { getLocation } from 'reducers/location';
 import { makeGetBusinessesInRegion } from 'reducers/points';
 import { regionChange } from 'actions/map';
-import { getRegionBoundaries, getZoomLevel } from 'util/map';
+import { getRegionEdges, getZoomLevel } from 'util/map';
 import type { Location } from 'types/Location';
 import type { Region } from 'types/Region';
 import type { Cluster } from 'types/Cluster';
@@ -27,7 +27,7 @@ const scaleRegion = factor => region => {
 };
 
 const renderBoundaries = (region: Region) => {
-  const [minLng, minLat, maxLng, maxLat] = getRegionBoundaries(region);
+  const [minLng, minLat, maxLng, maxLat] = getRegionEdges(region);
 
   const [nw, ne, sw, se] = [
     { latitude: minLat, longitude: minLng },
@@ -101,7 +101,7 @@ class App extends React.Component<void, Props, State> {
       return [];
     }
 
-    const bbox = getRegionBoundaries(region);
+    const bbox = getRegionEdges(region);
     const zoom = getZoomLevel(region, mapWidth);
     const clusters = index.getClusters(bbox, zoom);
 
@@ -127,7 +127,7 @@ class App extends React.Component<void, Props, State> {
 
     const { latitudeDelta } = this.props.region;
     // eslint-disable-next-line no-unused-vars
-    const [westLng, southLat, eastLng, northLat] = getRegionBoundaries(
+    const [westLng, southLat, eastLng, northLat] = getRegionEdges(
       this.props.region,
     );
 

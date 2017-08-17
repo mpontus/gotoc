@@ -7,7 +7,7 @@ import Quadtree from 'util/quadtree';
 import clusterPoints from 'util/clustering';
 import { getBusinesses } from 'reducers/businesses';
 import { BUSINESSES_ADDED } from 'actions/businesses';
-import { getRegionBoundaries } from 'util/map';
+import { getRegionEdges } from 'util/map';
 import type { Action } from 'actions/types';
 import type { Business } from 'types/Business';
 import type { Region } from 'types/Region';
@@ -73,7 +73,7 @@ export const makeGetBusinessesInRegion = () =>
     [getPoints, getBusinesses, getRegionFromProps],
     (points, businesses: Map<string, Business>, region: Region): Business[] => {
       const { latitudeDelta, longitudeDelta } = region;
-      const boundaries = getRegionBoundaries(region);
+      const boundaries = getRegionEdges(region);
 
       return points
         .queryRange(boundaries[1], boundaries[0], latitudeDelta, longitudeDelta)
@@ -96,7 +96,7 @@ export const makeGetClustersInRegion = () =>
     [makeGetBusinessesInRegion(), getRegionFromProps],
     (businesses: Business[], region: Region): Cluster[] => {
       const dimensions = { cols: 4, rows: 4 };
-      const [minY, minX, maxY, maxX] = getRegionBoundaries(region);
+      const [minY, minX, maxY, maxX] = getRegionEdges(region);
       const bbox = { minX, minY, maxX, maxY };
 
       return clusterPoints(

@@ -22,7 +22,7 @@ function computeLatBounds(lat, latD) {
   return [latS, latN];
 }
 
-export function getRegionBoundaries(region: Region) {
+export function getRegionEdges(region: Region) {
   const { latitude, longitude, latitudeDelta, longitudeDelta } = region;
 
   const [westLng, eastLng] = [-1, +1]
