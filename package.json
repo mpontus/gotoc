@@ -66,6 +66,7 @@
     "remote-redux-devtools": "^0.5.12",
     "reselect": "^3.0.1",
     "rxjs": "^5.4.2",
+    "sphericalmercator": "^1.0.5",
     "supercluster": "^2.3.0"
   }
 }

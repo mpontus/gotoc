@@ -9,7 +9,7 @@ import { getRegion } from 'reducers/map';
 import { getLocation } from 'reducers/location';
 import { makeGetBusinessesInRegion } from 'reducers/points';
 import { regionChange } from 'actions/map';
-import { getRegionEdges, getZoomLevel } from 'util/map';
+import { getRegionEdges, getRegionBoundaries, getZoomLevel } from 'util/map';
 import type { Location } from 'types/Location';
 import type { Region } from 'types/Region';
 import type { Cluster } from 'types/Cluster';
@@ -102,7 +102,7 @@ class App extends React.Component<void, Props, State> {
     }
 
     const bbox = getRegionEdges(region);
-    const zoom = getZoomLevel(region, mapWidth);
+    const zoom = getZoomLevel(region.longitudeDelta, mapWidth);
     const clusters = index.getClusters(bbox, zoom);
 
     return clusters;
@@ -121,34 +121,41 @@ class App extends React.Component<void, Props, State> {
   };
 
   renderDebug() {
-    if (!this.props.region) {
+    const { mapWidth } = this.state;
+    const { region } = this.props;
+
+    if (!mapWidth || !region) {
       return null;
     }
 
-    const { latitudeDelta } = this.props.region;
-    // eslint-disable-next-line no-unused-vars
-    const [westLng, southLat, eastLng, northLat] = getRegionEdges(
-      this.props.region,
+    const { latitude, longitude } = region;
+    const latLng = { lat: latitude, lng: longitude };
+    const zoom = getZoomLevel(region.longitudeDelta, mapWidth);
+    const { westLng, eastLng, northLat, southLat } = getRegionBoundaries(
+      latLng,
+      zoom,
     );
-
-    const deg2rad = Math.PI / 180;
-    const project = lat => Math.log(Math.tan(lat * deg2rad / 2 + Math.PI / 4));
 
     return (
       <View>
         <View>
           <Text>
-            {(project(northLat) - project(southLat)).toFixed(5)}
+            westLng: {westLng}
           </Text>
         </View>
         <View>
           <Text>
-            {latitudeDelta}
+            eastLng: {eastLng}
           </Text>
         </View>
         <View>
           <Text>
-            {northLat - southLat}
+            northLat: {northLat}
+          </Text>
+        </View>
+        <View>
+          <Text>
+            southLat: {southLat}
           </Text>
         </View>
       </View>
