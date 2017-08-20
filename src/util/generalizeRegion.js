@@ -3,6 +3,13 @@ import R from 'ramda';
 import SphericalMercator from 'sphericalmercator';
 import type { Region } from 'types/Region';
 
+type GeneralRegion = {
+  westLng: number,
+  southLat: number,
+  eastLng: number,
+  northLat: number,
+};
+
 export const factory = (globeWidth: number, maxPrecision: number = 20) => {
   // TODO: Re-implement mercator projection
   const mercator = new SphericalMercator({
@@ -26,12 +33,12 @@ export const factory = (globeWidth: number, maxPrecision: number = 20) => {
    * @param {Object} mapLayout Layout of the visible map
    * @param {number} mapLayout.width Width of the map in pixels
    * @param {number} mapLayout.height Height of the map in pixels
-   * @returns {Array<number>} Matching region in form: [westLng, southLat, eastLng, northLat]
+   * @returns {GeneralRegion} Generalized region with properties: westLng, eastLng, northLat, southLat
    */
   return function generalizeRegion(
     region: Region,
     mapLayout: { width: number, height: number },
-  ): Array<number> {
+  ): GeneralRegion {
     const { latitude, longitude, longitudeDelta } = region;
     const { width, height } = mapLayout;
 
@@ -45,7 +52,7 @@ export const factory = (globeWidth: number, maxPrecision: number = 20) => {
     // What fraction of the full map would the current segment take if it was perfectly square?
     const squaredRegionFraction = maxExtent / fullMapWidth;
 
-    // What power do you need to apply to the entent of the region to get full extent of the region?
+    // What power do you need to apply to the extent of the region to get full extent of the region?
     const regionExponent = Math.floor(Math.log2(1 / squaredRegionFraction));
 
     // Loosen the result to the nearest greater fraction, for example 0.125 for 0.067
@@ -62,7 +69,7 @@ export const factory = (globeWidth: number, maxPrecision: number = 20) => {
     const [westLng, southLat] = ll([normX(xMin), normY(yMax)]);
     const [eastLng, northLat] = ll([normX(xMax), normY(yMin)]);
 
-    return [westLng, southLat, eastLng, northLat];
+    return { westLng, southLat, eastLng, northLat };
   };
 };
 

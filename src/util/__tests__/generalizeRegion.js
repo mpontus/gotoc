@@ -54,7 +54,12 @@ describe('generalizeRegion', () => {
     const vp = { width: 100, height: 100 };
 
     // We will be expecting the region which is centered at 3/8:3/8 of size 1/2
-    const expectedRegion = [-135, approx(-40.9799), 45, approx(79.1713)];
+    const expectedRegion = {
+      westLng: -135,
+      southLat: approx(-40.9799),
+      eastLng: 45,
+      northLat: approx(79.1713),
+    };
 
     // Begin with region centered at 1/4:1/4 of size 1/4 of the map
     expect(
@@ -93,7 +98,12 @@ describe('generalizeRegion', () => {
         },
         vp,
       ),
-    ).toEqual([-45, approx(-79.1713), 135, approx(40.9799)]);
+    ).toEqual({
+      westLng: -45,
+      southLat: approx(-79.1713),
+      eastLng: 135,
+      northLat: approx(40.9799),
+    });
   });
 
   test('region depends on zoom level', () => {
@@ -101,7 +111,12 @@ describe('generalizeRegion', () => {
     const vp = { width: 100, height: 100 };
 
     // Region centered at 1/8:1/8 spanning half of the entire map
-    const expectedRegion = [-45, approx(-79.1713), 135, approx(40.9799)];
+    const expectedRegion = {
+      westLng: -45,
+      southLat: approx(-79.1713),
+      eastLng: 135,
+      northLat: approx(40.9799),
+    };
 
     // Begin with a region centered at 0:0, and spanning 1/4 of the entire map
     expect(
@@ -127,7 +142,12 @@ describe('generalizeRegion', () => {
         },
         vp,
       ),
-    ).toEqual([-22.5, approx(-55.7766), 67.5, approx(21.943)]);
+    ).toEqual({
+      westLng: -22.5,
+      southLat: approx(-55.7766),
+      eastLng: 67.5,
+      northLat: approx(21.943),
+    });
 
     // Zoom out by expanding region just above 1/2 of its original size
     expect(
@@ -161,7 +181,12 @@ describe('generalizeRegion', () => {
     };
 
     // Region centered at 1/8:1/8 spanning half of the entire map
-    const expectedRegion = [-45, approx(-79.1713), 135, approx(40.9799)];
+    const expectedRegion = {
+      westLng: -45,
+      southLat: approx(-79.1713),
+      eastLng: 135,
+      northLat: approx(40.9799),
+    };
 
     expect(generalizeRegion(verticalRegion, verticalVp)).toEqual(
       expectedRegion,
@@ -187,7 +212,12 @@ describe('generalizeRegion', () => {
         },
         vp,
       ),
-    ).toEqual([-45, approx(40.9799), 135, approx(85.05113)]);
+    ).toEqual({
+      westLng: -45,
+      southLat: approx(40.9799),
+      eastLng: 135,
+      northLat: approx(85.05113),
+    });
 
     // Region centered at 1/2:7/8 of size 1/4:1/4
     expect(
@@ -200,7 +230,12 @@ describe('generalizeRegion', () => {
         },
         vp,
       ),
-    ).toEqual([-45, approx(-85.05113), 135, approx(-40.9799)]);
+    ).toEqual({
+      westLng: -45,
+      southLat: approx(-85.05113),
+      eastLng: 135,
+      northLat: approx(-40.9799),
+    });
   });
 
   test('wraps on longitude', () => {
@@ -208,7 +243,12 @@ describe('generalizeRegion', () => {
     const vp = { width: 100, height: 100 };
 
     // We expect a region that is centered at 1/8:0 of size 1/2
-    const expectedRegion = [135, approx(-79.1713), -45, approx(40.9799)];
+    const expectedRegion = {
+      westLng: 135,
+      southLat: approx(-79.1713),
+      eastLng: -45,
+      northLat: approx(40.9799),
+    };
 
     // An actual region is centered at the equator at the edge of the map
     expect(
@@ -245,7 +285,12 @@ describe('generalizeRegion', () => {
     const vp = { width: 100, height: 100 };
 
     // Expected region is centered at 1/8,1/8 and is 1/4 of the map in size
-    const expectedRegion = [-22.5, approx(-55.7766), 67.5, approx(21.943)];
+    const expectedRegion = {
+      westLng: -22.5,
+      southLat: approx(-55.7766),
+      eastLng: 67.5,
+      northLat: approx(21.943),
+    };
 
     // The largest region which will resolve to smallest possible region
     expect(
@@ -284,6 +329,11 @@ describe('generalizeRegion', () => {
         },
         vp,
       ),
-    ).toEqual([-45, approx(-79.1713), 135, approx(40.9799)]);
+    ).toEqual({
+      westLng: -45,
+      southLat: approx(-79.1713),
+      eastLng: 135,
+      northLat: approx(40.9799),
+    });
   });
 });
