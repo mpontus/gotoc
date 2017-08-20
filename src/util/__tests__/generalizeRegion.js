@@ -1,6 +1,7 @@
-import generalizeRegion from '../generalizeRegion';
+import generalizeRegion, { factory } from '../generalizeRegion';
 
-// Helpful functions for REPL:
+// Helpful snippets for REPL:
+// var mercator = new SphericalMercator({ size: 256 });
 // var center = c => mercator.ll([c, c], 0);
 // var deltas = (c, s) => {
 //   const [sw, ne] = [c - s / 2, c + s / 2].map(n => mercator.ll([n, n], 0));
@@ -236,15 +237,53 @@ describe('generalizeRegion', () => {
     ).toEqual(expectedRegion);
   });
 
-  test.skip('region will not shrink past certain threshold', () => {
-    // Start with a region of size 1/2^19 centered at 0:0
+  test('region will not shrink past certain threshold', () => {
+    // Lower maximum precision to limit the smallest resolved region take up 1/4 of the map
+    const ownGeneralizeRegion = factory(256, 3);
+
+    // Square viewport
+    const vp = { width: 100, height: 100 };
+
+    // Expected region is centered at 1/8,1/8 and is 1/4 of the map in size
+    const expectedRegion = [-22.5, approx(-55.7766), 67.5, approx(21.943)];
+
+    // The largest region which will resolve to smallest possible region
     expect(
-      generalizeRegion({
-        latitude: 0,
-        longitude: 0,
-        latitudeDelta: 0.0006865,
-        longitudeDelta: 360 / 2 ** 19,
-      }),
-    ).toEqual([]);
+      ownGeneralizeRegion(
+        {
+          latitude: 0,
+          longitude: 0,
+          latitudeDelta: 43.8861,
+          longitudeDelta: 45,
+        },
+        vp,
+      ),
+    ).toEqual(expectedRegion);
+
+    // The input region twice as small should resolve to the same region
+    expect(
+      ownGeneralizeRegion(
+        {
+          latitude: 0,
+          longitude: 0,
+          latitudeDelta: 25.3568,
+          longitudeDelta: 22.5,
+        },
+        vp,
+      ),
+    ).toEqual(expectedRegion);
+
+    // But the region twice as large should resolve to different region
+    expect(
+      ownGeneralizeRegion(
+        {
+          latitude: 0,
+          longitude: 0,
+          latitudeDelta: 81.9598,
+          longitudeDelta: 90,
+        },
+        vp,
+      ),
+    ).toEqual([-45, approx(-79.1713), 135, approx(40.9799)]);
   });
 });
