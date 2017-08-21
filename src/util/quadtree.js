@@ -6,7 +6,7 @@ type Point = {
 };
 
 type Data = Point & {
-  data: mixed,
+  data: any,
 };
 
 const DEFAULT_CAPACITY = 4;
@@ -143,7 +143,7 @@ export default class Quadtree {
     this.root = root;
   }
 
-  insert(x: number, y: number, data: mixed) {
+  insert(x: number, y: number, data: any) {
     return new Quadtree(this.root.insert({ x, y, data }));
   }
 
