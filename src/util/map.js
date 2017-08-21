@@ -1,12 +1,8 @@
 // @flow
 import math from 'mathjs';
-import SphericalMercator from 'sphericalmercator';
 import type { Region } from 'types/Region';
 
 const GLOBE_WIDTH = 256;
-const mercator = new SphericalMercator({
-  size: GLOBE_WIDTH,
-});
 
 // I don't know how this works:
 // https://math.stackexchange.com/questions/2391556/mercator-projection-finding-boundaries-for-latitude-and-latitudedelta
@@ -43,37 +39,6 @@ export function getRegionEdges(region: Region) {
   ).map(rad => rad * rad2deg);
 
   return [westLng, southLat, eastLng, northLat];
-}
-
-type LatLng = {
-  lat: number,
-  lng: number,
-};
-
-type Boundaries = {
-  westLng: number,
-  eastLng: number,
-  northLat: number,
-  southLat: number,
-};
-
-export function getRegionBoundaries(
-  { lat, lng }: LatLng,
-  zoom: number,
-): Boundaries {
-  const [x, y] = mercator.px([lng, lat], zoom);
-  const [ix, iy] = [x, y].map(n => Math.floor(n / GLOBE_WIDTH));
-  const [nw, se] = [
-    [ix * GLOBE_WIDTH, iy * GLOBE_WIDTH],
-    [(ix + 1) * GLOBE_WIDTH, (iy + 1) * GLOBE_WIDTH],
-  ].map(px => mercator.ll(px, zoom));
-
-  return {
-    westLng: nw[0],
-    eastLng: se[0],
-    northLat: nw[1],
-    southLat: se[1],
-  };
 }
 
 export function getZoomLevel(longitudeDelta: number, width: number) {
