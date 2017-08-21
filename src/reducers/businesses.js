@@ -28,5 +28,5 @@ export default function businessesReducer(
   }
 }
 
-export const getBusinesses = (state: State): Map<string, Business> =>
+export const getBusinesses = (state: State): Map<string, Map<string, any>> =>
   state.get('businesses');
