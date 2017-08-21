@@ -1,0 +1,49 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`geo utils getDeltasForRadius covers area around Maua, Kenya 1`] = `
+Object {
+  "latitude": 0.008983152841195219,
+  "longitude": 0.008983228735225168,
+}
+`;
+
+exports[`geo utils getDeltasForRadius covers area around Nuuk Center, Greenland 1`] = `
+Object {
+  "latitude": 0.008983152841196329,
+  "longitude": 0.020623576901471097,
+}
+`;
+
+exports[`geo utils getDeltasForRadius covers area around Wellington, New Zealand 1`] = `
+Object {
+  "latitude": 0.008983152841196329,
+  "longitude": 0.011954546791031362,
+}
+`;
+
+exports[`geo utils getDeltasForRadius does not exceed area around Maua, Kenya 1`] = `
+Object {
+  "latitude": 0.008983152841195219,
+  "longitude": 0.008983228735225168,
+}
+`;
+
+exports[`geo utils getDeltasForRadius does not exceed area around Nuuk Center, Greenland 1`] = `
+Object {
+  "latitude": 0.008983152841196329,
+  "longitude": 0.020623576901471097,
+}
+`;
+
+exports[`geo utils getDeltasForRadius does not exceed area around Wellington, New Zealand 1`] = `
+Object {
+  "latitude": 0.008983152841196329,
+  "longitude": 0.011954546791031362,
+}
+`;
+
+exports[`geo utils getRadiusForRegion radius around Maua, Kenya 1`] = `11279`;
+
+exports[`geo utils getRadiusForRegion radius around Nuuk Center, Greenland 1`] = `11210`;
+
+exports[`geo utils getRadiusForRegion radius around Wellington, New Zealand 1`] = `11240`;

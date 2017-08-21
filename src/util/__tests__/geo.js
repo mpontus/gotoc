@@ -1,4 +1,3 @@
-import geolib from 'geolib';
 import { getDeltasForRadius, getRadiusForRegion } from '../geo';
 
 // Errors to the south, north, and right above equator
@@ -12,59 +11,11 @@ describe('geo utils', () => {
   describe('getDeltasForRadius', () => {
     points.forEach(([name, latitude, longitude]) => {
       test(`covers area around ${name}`, () => {
-        const start = { latitude, longitude };
-
-        // Coordinates of the point one kilometer into different directions
-        const getRelativePoint = direction =>
-          geolib.computeDestinationPoint(start, 1000, direction);
-        const [north, west, south, east] = [0, 90, 180, 270].map(
-          getRelativePoint,
-        );
-
-        // Deltas for the radius of one kilometer around the starting point
-        const {
-          latitude: latitudeDelta,
-          longitude: longitudeDelta,
-        } = getDeltasForRadius(latitude, longitude, 1000);
-
-        // Verify that relative points fall within delta
-        expect(latitudeDelta).toBeGreaterThanOrEqual(
-          Math.abs(latitude - north.latitude),
-        );
-        expect(latitudeDelta).toBeGreaterThanOrEqual(
-          Math.abs(latitude - south.latitude),
-        );
-        expect(longitudeDelta).toBeGreaterThanOrEqual(
-          Math.abs(longitude - east.longitude),
-        );
-        expect(longitudeDelta).toBeGreaterThanOrEqual(
-          Math.abs(longitude - west.longitude),
-        );
+        expect(getDeltasForRadius(latitude, longitude, 1000)).toMatchSnapshot();
       });
 
       test(`does not exceed area around ${name}`, () => {
-        const start = { latitude, longitude };
-
-        // Coordinates of the point one kilometer into different directions
-        const getPoint = direction =>
-          geolib.computeDestinationPoint(start, 1001, direction);
-        const [north, west, south, east] = [0, 90, 180, 270].map(getPoint);
-
-        // Deltas for the radius of one kilometer around the starting point
-        const {
-          latitude: latitudeDelta,
-          longitude: longitudeDelta,
-        } = getDeltasForRadius(latitude, longitude, 1000);
-
-        // Verify that relative points fall within delta
-        expect(latitudeDelta).toBeLessThan(Math.abs(latitude - north.latitude));
-        expect(latitudeDelta).toBeLessThan(Math.abs(latitude - south.latitude));
-        expect(longitudeDelta).toBeLessThan(
-          Math.abs(longitude - east.longitude),
-        );
-        expect(longitudeDelta).toBeLessThan(
-          Math.abs(longitude - west.longitude),
-        );
+        expect(getDeltasForRadius(latitude, longitude, 1000)).toMatchSnapshot();
       });
     });
   });
@@ -72,40 +23,17 @@ describe('geo utils', () => {
   describe('getRadiusForRegion', () => {
     points.forEach(([name, latitude, longitude]) => {
       test(`radius around ${name}`, () => {
-        const start = { latitude, longitude };
         const latitudeDelta = 0.2;
         const longitudeDelta = 0.04;
 
-        // Coordinates of the corners of the region
-        const cornerCoords = [
-          // Top left
-          [latitude + latitudeDelta / 2, longitude - longitudeDelta / 2],
-          // Top right
-          [latitude + latitudeDelta / 2, longitude + longitudeDelta / 2],
-          // Bottom left
-          [latitude - latitudeDelta / 2, longitude - longitudeDelta / 2],
-          // Bottom right
-          [latitude - latitudeDelta / 2, longitude + longitudeDelta / 2],
-        ];
-
-        // Convert corner coordinates to distance from the starting point
-        const cornerDistances = cornerCoords.map(([lat, lng]) =>
-          geolib.getDistance(start, {
-            lat,
-            lng,
-          }),
-        );
-
-        // Compute radius for slightly greater distances
-        const radius = getRadiusForRegion(
-          latitude,
-          longitude,
-          latitudeDelta,
-          longitudeDelta,
-        );
-
-        // Verify that the returned radius is greater than all distances
-        expect(radius).toBe(Math.max.apply(null, cornerDistances));
+        expect(
+          getRadiusForRegion(
+            latitude,
+            longitude,
+            latitudeDelta,
+            longitudeDelta,
+          ),
+        ).toMatchSnapshot();
       });
     });
   });
