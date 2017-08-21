@@ -1,17 +1,10 @@
 // @flow
 import { Map, Set } from 'immutable';
 import { handleActions } from 'redux-actions';
-import { createSelector } from 'reselect';
 import { prop } from 'ramda';
 import Quadtree from 'util/quadtree';
-import clusterPoints from 'util/clustering';
-import { getBusinesses } from 'reducers/businesses';
 import { BUSINESSES_ADDED } from 'actions/businesses';
-import { getRegionEdges } from 'util/map';
 import type { Action } from 'actions/types';
-import type { Business } from 'types/Business';
-import type { Region } from 'types/Region';
-import type { Cluster } from 'types/Cluster';
 
 const initialState = Map({
   index: Set(),
@@ -64,59 +57,7 @@ const pointsReducer = (state: Map<*, *> = initialState, action: Action) => {
   });
 };
 
-const getPoints = state => state.getIn(['points', 'tree']);
-
-const getRegionFromProps = (state, ownProps) => ownProps.region;
-
-export const makeGetBusinessesInRegion = () =>
-  createSelector(
-    [getPoints, getBusinesses, getRegionFromProps],
-    (points, businesses: Map<string, Business>, region: Region): Business[] => {
-      const { latitudeDelta, longitudeDelta } = region;
-      const boundaries = getRegionEdges(region);
-
-      return points
-        .queryRange(boundaries[1], boundaries[0], latitudeDelta, longitudeDelta)
-        .map(id => businesses.get(id));
-    },
-  );
-
-const businessToPoint = business => {
-  const { latitude, longitude } = business.coordinates;
-
-  return {
-    business,
-    x: longitude,
-    y: latitude,
-  };
-};
-
-export const makeGetClustersInRegion = () =>
-  createSelector(
-    [makeGetBusinessesInRegion(), getRegionFromProps],
-    (businesses: Business[], region: Region): Cluster[] => {
-      const dimensions = { cols: 4, rows: 4 };
-      const [minY, minX, maxY, maxX] = getRegionEdges(region);
-      const bbox = { minX, minY, maxX, maxY };
-
-      return clusterPoints(
-        dimensions,
-        bbox,
-        businesses.map(businessToPoint),
-      ).map(cluster => {
-        const points = cluster.points.map(
-          point =>
-            // $FlowFixMe
-            point.business,
-        );
-
-        return {
-          latitude: cluster.y,
-          longitude: cluster.x,
-          points,
-        };
-      });
-    },
-  );
-
 export default pointsReducer;
+
+export const getPoints = (state: Map<*, *>): Quadtree =>
+  state.get('points').get('tree');

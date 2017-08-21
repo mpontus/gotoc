@@ -1,10 +1,7 @@
 import { Map, Set } from 'immutable';
 import Quadtree from 'util/quadtree';
 import { addBusinesses } from 'actions/businesses';
-import pointsReducer, {
-  makeGetBusinessesInRegion,
-  makeGetClustersInRegion,
-} from '../points';
+import pointsReducer from '../points';
 
 describe('pointsReducer', () => {
   it('returns the initial state', () => {
@@ -51,96 +48,5 @@ describe('pointsReducer', () => {
     const newState = pointsReducer(state, action);
 
     expect(newState.get('tree').queryRange(0, 0, 10, 10)).toEqual(['bar']);
-  });
-});
-
-describe('makeGetBusinessesInRegion', () => {
-  it('should return businesses in region', () => {
-    const state = Map({
-      businesses: Map({
-        1: 'foo',
-        2: 'bar',
-        3: 'baz',
-      }),
-      points: Map({
-        tree: Quadtree.create(0, 0, 100, 100)
-          .insert(20, 20, '1')
-          .insert(30, 30, '2')
-          .insert(40, 40, '3'),
-      }),
-    });
-
-    const getBusinessesInRegion = makeGetBusinessesInRegion();
-    const region = {
-      latitude: 25,
-      longitude: 25,
-      latitudeDelta: 12,
-      longitudeDelta: 12,
-    };
-    const businesses = getBusinessesInRegion(state, { region });
-
-    expect(businesses).toEqual(['foo', 'bar']);
-  });
-});
-
-describe('makeGetClustersInRegion', () => {
-  it('should return clusters in the region', () => {
-    const state = Map({
-      businesses: Map({
-        1: { id: 'foo', coordinates: { latitude: 12, longitude: 12 } },
-        2: { id: 'bar', coordinates: { latitude: 14, longitude: 14 } },
-        3: { id: 'baz', coordinates: { latitude: 90, longitude: 90 } },
-      }),
-      points: Map({
-        tree: Quadtree.create(0, 0, 100, 100)
-          .insert(12, 12, '1')
-          .insert(14, 14, '2')
-          .insert(90, 90, '3'),
-      }),
-    });
-
-    const region = {
-      latitude: 50,
-      longitude: 50,
-      latitudeDelta: 100,
-      longitudeDelta: 100,
-    };
-    const result = makeGetClustersInRegion()(state, { region });
-
-    expect(result).toEqual([
-      {
-        latitude: 13,
-        longitude: 13,
-        points: [
-          {
-            coordinates: {
-              latitude: 12,
-              longitude: 12,
-            },
-            id: 'foo',
-          },
-          {
-            coordinates: {
-              latitude: 14,
-              longitude: 14,
-            },
-            id: 'bar',
-          },
-        ],
-      },
-      {
-        latitude: 90,
-        longitude: 90,
-        points: [
-          {
-            coordinates: {
-              latitude: 90,
-              longitude: 90,
-            },
-            id: 'baz',
-          },
-        ],
-      },
-    ]);
   });
 });
