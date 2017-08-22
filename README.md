@@ -2,7 +2,9 @@
 
 This is an example project I'm making to teach myself mobile development.
 
-TODO: Here will be screenshots
+## Working state
+
+Don't try to run this app. It could not be launched at the time of writing.
 
 ## Technology Stack
 
