@@ -1,8 +1,5 @@
-# Private
+# Secrets and api keys
 .env
-
-# Cruft
-/coverage
 
 # OSX
 #
@@ -46,12 +43,6 @@ yarn-error.log
 buck-out/
 \.buckd/
 *.keystore
-
-# android key
-android/.gradle
-android/app/my-release-key.keystore
-
-ios/build
 
 # fastlane
 #

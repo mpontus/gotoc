@@ -56,7 +56,9 @@ export const factory = (globeWidth: number, maxPrecision: number = 20) => {
     const regionExponent = Math.floor(Math.log2(1 / squaredRegionFraction));
 
     // Loosen the result to the nearest greater fraction, for example 0.125 for 0.067
-    const span = globeWidth / 2 ** Math.min(maxPrecision, regionExponent);
+    // See https://github.com/facebook/react-native/pull/12339
+    const span =
+      globeWidth / Math.pow(2, Math.min(maxPrecision, regionExponent)); // eslint-disable-line no-restricted-properties
 
     // Find the XY coordinates for the center and corners of the loosened region
     const [x, y] = xy([longitude, latitude]);
