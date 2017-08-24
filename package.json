@@ -45,9 +45,6 @@
       "git add"
     ]
   },
-  "jest": {
-    "preset": "jest-expo"
-  },
   "dependencies": {
     "geolib": "^2.0.22",
     "immutable": "^3.8.1",
