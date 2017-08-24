@@ -336,4 +336,19 @@ describe('generalizeRegion', () => {
       northLat: approx(40.9799),
     });
   });
+
+  it('should handle realistic inputs', () => {
+    const region = {
+      latitude: 37.78825,
+      latitudeDelta: 0.00898315284121054,
+      longitude: -122.4324,
+      longitudeDelta: 0.011367040760049463,
+    };
+    const layout = {
+      height: 602,
+      width: 360,
+    };
+
+    expect(generalizeRegion(region, layout)).toMatchSnapshot();
+  });
 });

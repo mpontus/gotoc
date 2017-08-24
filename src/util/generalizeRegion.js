@@ -75,4 +75,4 @@ export const factory = (globeWidth: number, maxPrecision: number = 20) => {
   };
 };
 
-export default factory(256, 20);
+export default factory(Math.pow(2, 21), 20); // eslint-disable-line no-restricted-properties

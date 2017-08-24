@@ -1,0 +1,10 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`generalizeRegion should handle realistic inputs 1`] = `
+Object {
+  "eastLng": -122.420654296875,
+  "northLat": 37.814123701604466,
+  "southLat": 37.779398571318765,
+  "westLng": -122.464599609375,
+}
+`;
