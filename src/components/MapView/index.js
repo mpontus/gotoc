@@ -1,25 +1,43 @@
 // @flow
 import React from 'react';
-import { View, Text } from 'react-native';
+import { StyleSheet, View, Text } from 'react-native';
 import type { Marker } from 'components/Map';
 import Map from 'components/Map';
-import styles from './MapView.styles';
 import type { Region } from './types';
 
 function noop() {}
 
 type PropTypes = {
-  region?: ?Region,
+  region: Region,
   markers: Marker[],
   debug?: ?React.Element<*>,
   onRegionChange?: (region: Region) => void,
 };
 
 const defaultProps = {
-  region: null,
   onRegionChange: noop,
   debug: null,
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+  main: {
+    flex: 1,
+  },
+  status: {
+    paddingVertical: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  loading: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});
 
 // TODO Refactor, extract Container, Main, Status
 const MapView = ({
@@ -38,9 +56,10 @@ const MapView = ({
         markers={markers}
         {...rest}
       />
+      {debug &&
       <View style={styles.status}>
         {debug}
-      </View>
+      </View>}
     </View>
     : <View style={styles.container}>
       <View style={styles.main}>
