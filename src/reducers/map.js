@@ -16,17 +16,16 @@ import type { Business } from 'types/Business';
 
 const defaultState = Map({
   moved: false,
-  region: Map({
-    latitude: null,
-    longitude: null,
-    latitudeDelta: null,
-    longitudeDelta: null,
-  }),
-  layout: Map({
-    width: null,
-    height: null,
-  }),
+  region: null,
+  layout: null,
 });
+
+// Checks if two arguments are shallowly equal as objects
+// Returns false if one of the arguments is null.
+const shallowEqualityCheck = R.both(
+  R.unapply(R.none(R.isNil)),
+  shallowEqualObjects,
+);
 
 function getInitialState(config: Config) {
   const { defaultLatitude, defaultLongitude, defaultRadius } = config;
@@ -52,12 +51,12 @@ const makeMapReducer = (config: Config) =>
       [REGION_CHANGE]: (state, action) => {
         const region = action.payload;
 
-        return state.set('moved', true).mergeIn(['region'], region);
+        return state.set('moved', true).set('region', Map(region));
       },
       [LAYOUT_CHANGE]: (state, action) => {
         const layout = action.payload;
 
-        return state.mergeIn(['layout'], layout);
+        return state.set('layout', Map(layout));
       },
     },
     getInitialState(config),
@@ -79,17 +78,20 @@ const businessToGeoPoint = R.applySpec({
 
 export const getRegion = createSelector(
   state => state.getIn(['map', 'region']),
-  region => region.toJS(),
+  region => region && region.toJS(),
 );
 
 export const getLayout = createSelector(
   state => state.getIn(['map', 'layout']),
-  layout => layout.toJS(),
+  layout => layout && layout.toJS(),
 );
 
 export const getZoomLevel = createSelector(
   [getRegion, getLayout],
-  (region, layout) => calculateZoomLevel(region.latitudeDelta, layout.width),
+  (region, layout) =>
+    region && layout
+      ? calculateZoomLevel(region.latitudeDelta, layout.width)
+      : null,
 );
 
 export const makeGetBoundaries = () =>
@@ -101,8 +103,8 @@ export const makeGetBoundaries = () =>
 
         return generalizeRegion(region, layout);
       },
-      // Ensure that equivalent objects are equal by reference
-      memoize(R.identity, shallowEqualObjects),
+      // Ensure that equivalent objects are identical
+      memoize(R.identity, shallowEqualityCheck),
     ),
   );
 
@@ -114,7 +116,7 @@ const makeGetPoints = () =>
     const width = eastLng - westLng;
     const height = northLat - southLat;
 
-    return points.queryRange(westLng, southLat, width, height);
+    return points.queryRange(southLat, westLng, height, width);
   });
 
 const makeGetBusinesses = () =>
@@ -131,7 +133,7 @@ export const makeGetClusters = () =>
       if (!boundaries) return [];
 
       const { westLng, southLat, eastLng, northLat } = boundaries;
-      const index = supercluster({ minZoom: zoom, maxZoom: zoom });
+      const index = supercluster({ radius: 80, minZoom: zoom, maxZoom: zoom });
 
       // $FlowFixMe
       index.load(R.map(businessToGeoPoint, businesses));

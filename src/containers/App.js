@@ -2,8 +2,9 @@
 import React from 'react';
 import { Marker } from 'react-native-maps';
 import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
 import MapView from 'components/MapView';
-import { getRegion } from 'reducers/map';
+import { getRegion, makeGetClusters } from 'reducers/map';
 import { regionChange, mapLayout } from 'actions/map';
 import type { Region } from 'types/Region';
 import type { Business } from 'types/Business';
@@ -40,10 +41,11 @@ type LayoutEvent = Event & {
 };
 
 /* Component */
-const mapStateToProps = () => state => ({
-  clusters: [],
-  region: getRegion(state),
-});
+const mapStateToProps = () =>
+  createStructuredSelector({
+    region: getRegion,
+    clusters: makeGetClusters(),
+  });
 
 const enhance = connect(mapStateToProps, { regionChange, mapLayout });
 

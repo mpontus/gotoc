@@ -1,5 +1,5 @@
 // @flow
-import { Map } from 'immutable';
+import { Map, fromJS } from 'immutable';
 import type { Business } from 'types/Business';
 import { BUSINESSES_ADDED } from 'actions/businesses';
 import type { Action } from 'actions/types';
@@ -18,7 +18,7 @@ export default function businessesReducer(
         businesses.forEach(business => {
           const { id } = business;
 
-          map.set(id, business);
+          map.set(id, fromJS(business));
         });
       });
     }
