@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import MapView from 'components/MapView';
 import ClusterMarker from 'components/ClusterMarker';
+import PointMarker from 'components/PointMarker';
 import { getRegion, makeGetClusters } from 'reducers/map';
 import { regionChange, mapLayout } from 'actions/map';
 import type { Region } from 'types/Region';
@@ -73,14 +74,14 @@ class App extends React.Component<void, Props, void> {
         {clusters.map(cluster => {
           const { properties, geometry } = cluster;
           const [longitude, latitude] = geometry.coordinates;
+          const coordinate = { latitude, longitude };
           const id = properties.cluster ? properties.cluster_id : properties.id;
-          const count = properties.cluster ? properties.point_count : 0;
 
-          return (
-            <ClusterMarker key={id} coordinate={{ latitude, longitude }}>
-              {count}
+          return properties.cluster
+            ? <ClusterMarker key={id} coordinate={coordinate}>
+              {properties.point_count}
             </ClusterMarker>
-          );
+            : <PointMarker key={id} coordinate={coordinate} />;
         })}
       </MapView>
     );
