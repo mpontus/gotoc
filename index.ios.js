@@ -1,4 +1,3 @@
-import { AppRegistry } from 'react-native';
-import App from './src';
+import { registerScreens } from './src/screens';
 
-AppRegistry.registerComponent('gotoc', () => App);
+registerScreens();
