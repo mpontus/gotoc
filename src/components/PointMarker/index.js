@@ -6,13 +6,9 @@ import markerImage from './diamond.png';
 
 const styles = StyleSheet.create({
   image: {
-    // TODO: Use constants for colors
-    tintColor: 'blue',
+    tintColor: '#0097A7',
     width: 15,
-
     height: 30,
-
-    // resizeMode: 'stretch',
   },
 });
 

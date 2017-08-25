@@ -15,7 +15,7 @@ const defaultProps = {
 const styles = StyleSheet.create({
   image: {
     // TODO: Use constants for colors
-    tintColor: 'red',
+    tintColor: '#FFA726',
     width: 40,
     height: 40,
   },
