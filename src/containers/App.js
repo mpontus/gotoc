@@ -1,9 +1,9 @@
 // @flow
 import React from 'react';
-import { Marker } from 'react-native-maps';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import MapView from 'components/MapView';
+import ClusterMarker from 'components/ClusterMarker';
 import { getRegion, makeGetClusters } from 'reducers/map';
 import { regionChange, mapLayout } from 'actions/map';
 import type { Region } from 'types/Region';
@@ -74,13 +74,12 @@ class App extends React.Component<void, Props, void> {
           const { properties, geometry } = cluster;
           const [longitude, latitude] = geometry.coordinates;
           const id = properties.cluster ? properties.cluster_id : properties.id;
+          const count = properties.cluster ? properties.point_count : 0;
 
           return (
-            <Marker
-              key={id}
-              coordinate={{ latitude, longitude }}
-              pinColor="#FF0000"
-            />
+            <ClusterMarker key={id} coordinate={{ latitude, longitude }}>
+              {count}
+            </ClusterMarker>
           );
         })}
       </MapView>
