@@ -1,7 +1,3 @@
-import React from 'react';
-import { View, Text } from 'react-native';
+import List from 'containers/List';
 
-export default () =>
-  (<View>
-    <Text>Hello world!</Text>
-  </View>);
+export default List;
