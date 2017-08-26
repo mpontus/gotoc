@@ -22,10 +22,13 @@ const defaultState = Map({
 
 // Checks if two arguments are shallowly equal as objects
 // Returns false if one of the arguments is null.
-const shallowEqualityCheck = R.both(
-  R.unapply(R.none(R.isNil)),
-  shallowEqualObjects,
-);
+const shallowEqualityCheck = (a: ?Object, b: ?Object): boolean => {
+  if (a === null || b === null) {
+    return false;
+  }
+
+  return shallowEqualObjects(a, b);
+};
 
 function getInitialState(config: Config) {
   const { defaultLatitude, defaultLongitude, defaultRadius } = config;
@@ -119,7 +122,7 @@ const makeGetPoints = () =>
     return points.queryRange(southLat, westLng, height, width);
   });
 
-const makeGetBusinesses = () =>
+export const makeGetBusinesses = () =>
   createSelector(
     [makeGetPoints(), getBusinesses],
     (points, businesses): Business[] =>

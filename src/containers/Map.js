@@ -8,26 +8,12 @@ import PointMarker from 'components/PointMarker';
 import { getRegion, makeGetClusters } from 'reducers/map';
 import { regionChange, mapLayout } from 'actions/map';
 import type { Region } from 'types/Region';
-import type { Business } from 'types/Business';
-
-type Cluster = {|
-  cluster: true,
-  cluster_id: number,
-|};
-
-type Feature = {
-  type: 'Feature',
-  properties: Cluster | (Business & { cluster: false }),
-  geometry: {
-    type: 'Point',
-    coordinates: number[],
-  },
-};
+import type { Cluster } from 'types/Cluster';
 
 /* Types */
 type Props = {
   region: Region,
-  clusters: Feature[],
+  clusters: Cluster[],
   regionChange: (region: Region) => void,
   mapLayout: (layout: { width: number, height: number }) => void,
 };
