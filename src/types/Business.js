@@ -1,10 +1,10 @@
 // @flow
-type Category = {
+type Category = {|
   alias: string,
   title: string,
-};
+|};
 
-export type Business = {
+export type Business = {|
   rating: number,
   price: string,
   phone: string,
@@ -16,6 +16,7 @@ export type Business = {
   url: string,
   coordinates: Coordinates,
   image_url: string,
+  display_phone: string,
   location: {
     country: string,
     state: string,
@@ -24,7 +25,8 @@ export type Business = {
     address1: string,
     address2: string,
     address3: string,
+    display_address: [string, string],
   },
   distance: number,
   transactions: string[],
-};
+|};

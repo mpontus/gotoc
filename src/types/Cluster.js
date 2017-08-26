@@ -8,6 +8,6 @@ type Properties =
       cluster_id: number,
       point_count: number,
     |}
-  | (Business & { cluster: false });
+  | Business;
 
 export type Cluster = Feature<Point, Properties>;
