@@ -6,10 +6,15 @@
     "prettier"
   ],
   "plugins": [
+    "jest",
     "flowtype",
     "eslint-comments"
   ],
   "rules": {
+    "jest/no-disabled-tests": "warn",
+    "jest/no-focused-tests": "error",
+    "jest/no-identical-title": "error",
+    "jest/valid-expect": "error",
     "react/no-unused-prop-types": 0,
     "react/jsx-filename-extension": 0,
     "eslint-comments/no-duplicate-disable": "error",

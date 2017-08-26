@@ -8,7 +8,7 @@ import epic, { exhaustiveFetch } from '../yelp';
 jest.mock('util/geo');
 
 const makeResponse = R.compose(
-  Promise.resolve,
+  Promise.resolve.bind(Promise),
   R.mergeDeepRight({
     businesses: [],
     total: 1000,
