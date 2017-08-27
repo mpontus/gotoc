@@ -1,18 +1,15 @@
 // @flow
 import React from 'react';
-import { ListView } from 'react-native';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { makeGetBusinesses } from 'reducers/map';
+import { requestBusinessDetails } from 'actions/listing';
 import BusinessList from 'components/BusinessList';
 import type { Business } from 'types/Business';
 
 type Props = {
   businesses: Business[],
-};
-
-type State = {
-  dataSource: ListView.DataSource,
+  handleSelectBusiness: (business: Business) => void,
 };
 
 const mapStateToProps = () =>
@@ -20,30 +17,14 @@ const mapStateToProps = () =>
     businesses: makeGetBusinesses(),
   });
 
-const enhance = connect(mapStateToProps);
+const enhance = connect(mapStateToProps, {
+  handleSelectBusiness: requestBusinessDetails,
+});
 
-class List extends React.Component<void, Props, State> {
-  state = {
-    dataSource: new ListView.DataSource({
-      rowHasChanged: (prev, next) => prev === next,
-    }),
-  };
-
-  componentWillMount() {
-    this.setState({
-      dataSource: this.state.dataSource.cloneWithRows(this.props.businesses),
-    });
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.setState({
-      dataSource: this.state.dataSource.cloneWithRows(nextProps.businesses),
-    });
-  }
-
-  render() {
-    return <BusinessList dataSource={this.state.dataSource} />;
-  }
-}
+const List = ({ businesses, handleSelectBusiness }: Props) =>
+  (<BusinessList
+    businesses={businesses}
+    onSelect={(event, business) => handleSelectBusiness(business)}
+  />);
 
 export default enhance(List);
