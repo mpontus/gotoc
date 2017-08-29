@@ -19,7 +19,7 @@ function locationReducer(
   switch (action.type) {
     case USER_LOCATION_UPDATED: {
       // $FlowFixMe
-      const { latitude, longitude } = action.payload;
+      const { latitude, longitude } = action.payload.location;
 
       return Map({
         acquired: true,

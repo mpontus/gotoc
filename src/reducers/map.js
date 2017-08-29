@@ -52,12 +52,12 @@ const makeMapReducer = (config: Config) =>
   handleActions(
     {
       [REGION_CHANGE]: (state, action) => {
-        const region = action.payload;
+        const { region } = action.payload;
 
         return state.set('moved', true).set('region', Map(region));
       },
       [LAYOUT_CHANGE]: (state, action) => {
-        const layout = action.payload;
+        const { layout } = action.payload;
 
         return state.set('layout', Map(layout));
       },

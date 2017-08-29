@@ -10,7 +10,7 @@ import { BUSINESS_DETAILS_REQUESTED } from './listing';
 export type Action =
   | {|
       type: typeof REGION_CHANGE,
-      payload: Region,
+      payload: { region: Region },
     |}
   | {|
       type: typeof BUSINESSES_ADDED,
@@ -20,9 +20,9 @@ export type Action =
     |}
   | {|
       type: typeof USER_LOCATION_UPDATED,
-      payload: Location,
+      payload: { location: Location },
     |}
   | {|
       type: typeof BUSINESS_DETAILS_REQUESTED,
-      payload: Business,
+      payload: { business: Business },
     |};

@@ -88,7 +88,7 @@ const yelpEpic = (
     .debounceTime(100)
     .ofType(REGION_CHANGE)
     .switchMap((action: Action): Observable<Business[]> => {
-      const region = action.payload;
+      const { region } = action.payload;
       // $FlowFixMe
       const { latitude, longitude, latitudeDelta, longitudeDelta } = region;
 
