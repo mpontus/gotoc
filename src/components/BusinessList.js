@@ -19,11 +19,6 @@ const styles = StyleSheet.create({
   },
 });
 
-const renderRow = (business: Business) =>
-  (<View style={styles.item}>
-    <BusinessListItem business={business} />
-  </View>);
-
 class BusinessList extends React.Component<void, Props, State> {
   state = {
     dataSource: new ListView.DataSource({
@@ -43,12 +38,17 @@ class BusinessList extends React.Component<void, Props, State> {
     });
   }
 
+  renderRow = (business: Business) =>
+    (<View style={styles.item}>
+      <BusinessListItem onSelect={this.props.onSelect} business={business} />
+    </View>);
+
   render() {
     return (
       <ListView
         enableEmptySections
         dataSource={this.state.dataSource}
-        renderRow={renderRow}
+        renderRow={this.renderRow}
       />
     );
   }

@@ -1,15 +1,17 @@
 // @flow
 import React from 'react';
-import { StyleSheet, Image, View, Text } from 'react-native';
+import {
+  StyleSheet,
+  TouchableNativeFeedback,
+  Image,
+  View,
+  Text,
+} from 'react-native';
 import type { Business } from 'types/Business';
 
 type Props = {
-  style?: Object,
   business: Business,
-};
-
-const defaultProps = {
-  style: undefined,
+  onSelect: (event: Event, business: Business) => any,
 };
 
 const styles = StyleSheet.create({
@@ -29,8 +31,11 @@ const styles = StyleSheet.create({
   },
 });
 
-const BusinessListItem = ({ style, business }: Props): React.Element<*> =>
-  (<View style={style}>
+const BusinessListItem = ({ business, onSelect }: Props): React.Element<*> =>
+  (<TouchableNativeFeedback
+    onPress={event => onSelect(event, business)}
+    background={TouchableNativeFeedback.SelectableBackground()}
+  >
     <View style={styles.container}>
       <Image style={styles.image} source={{ uri: business.image_url }} />
       <View>
@@ -52,8 +57,6 @@ const BusinessListItem = ({ style, business }: Props): React.Element<*> =>
         </View>
       </View>
     </View>
-  </View>);
-
-BusinessListItem.defaultProps = defaultProps;
+  </TouchableNativeFeedback>);
 
 export default BusinessListItem;
