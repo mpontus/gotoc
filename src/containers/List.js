@@ -3,13 +3,12 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { makeGetBusinesses } from 'reducers/map';
-import { requestBusinessDetails } from 'actions/listing';
 import BusinessList from 'components/BusinessList';
 import type { Business } from 'types/Business';
 
 type Props = {
   businesses: Business[],
-  handleSelectBusiness: (business: Business) => void,
+  onSelect: (business: Business) => void,
 };
 
 const mapStateToProps = () =>
@@ -17,14 +16,12 @@ const mapStateToProps = () =>
     businesses: makeGetBusinesses(),
   });
 
-const enhance = connect(mapStateToProps, {
-  handleSelectBusiness: requestBusinessDetails,
-});
+const enhance = connect(mapStateToProps);
 
-const List = ({ businesses, handleSelectBusiness }: Props) =>
+const List = ({ businesses, onSelect }: Props) =>
   (<BusinessList
     businesses={businesses}
-    onSelect={(event, business) => handleSelectBusiness(business)}
+    onSelect={(event, business) => onSelect(business)}
   />);
 
 export default enhance(List);
