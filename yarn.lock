@@ -3547,6 +3547,10 @@ makeerror@1.0.x:
   dependencies:
     tmpl "1.0.x"
 
+material-colors@^1.2.5:
+  version "1.2.5"
+  resolved "https://registry.yarnpkg.com/material-colors/-/material-colors-1.2.5.tgz#5292593e6754cb1bcc2b98030e4e0d6a3afc9ea1"
+
 mathjs@^3.16.1:
   version "3.16.2"
   resolved "https://registry.yarnpkg.com/mathjs/-/mathjs-3.16.2.tgz#9d6549f690b68b9423a6cd742ba47f9435dbcc95"

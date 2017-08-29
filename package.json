@@ -49,6 +49,7 @@
   "dependencies": {
     "geolib": "^2.0.22",
     "immutable": "^3.8.1",
+    "material-colors": "^1.2.5",
     "mathjs": "^3.16.1",
     "query-string": "^5.0.0",
     "ramda": "^0.24.1",
