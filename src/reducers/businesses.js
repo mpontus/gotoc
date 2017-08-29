@@ -1,5 +1,6 @@
 // @flow
 import { Map, fromJS } from 'immutable';
+import { createSelector } from 'reselect';
 import type { Business } from 'types/Business';
 import { BUSINESSES_ADDED } from 'actions/businesses';
 import type { Action } from 'actions/types';
@@ -30,3 +31,16 @@ export default function businessesReducer(
 
 export const getBusinesses = (state: State): Map<string, Map<string, any>> =>
   state.get('businesses');
+
+const getIdProp = (state, ownProps) => ownProps.id;
+
+export const makeGetBusiness = () =>
+  createSelector([getBusinesses, getIdProp], (businesses, id) => {
+    const business = businesses.get(id);
+
+    if (!business) {
+      return null;
+    }
+
+    return business.toJS();
+  });
