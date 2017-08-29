@@ -8,7 +8,6 @@ type Location = Map<*, *>;
 
 const initialState = Map({
   acquired: false,
-  timestamp: null,
   latitude: null,
   longitude: null,
 });
@@ -20,13 +19,10 @@ function locationReducer(
   switch (action.type) {
     case USER_LOCATION_UPDATED: {
       // $FlowFixMe
-      const { timestamp, coords } = action.payload;
-      // $FlowFixMe
-      const { latitude, longitude } = coords;
+      const { latitude, longitude } = action.payload;
 
       return Map({
         acquired: true,
-        timestamp,
         latitude,
         longitude,
       });
