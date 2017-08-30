@@ -45,9 +45,11 @@ const styles = StyleSheet.create({
 
 type Props = {
   business: Business,
+  onAddressPress: (event: Event) => void,
+  onPhonePress: (event: Event) => void,
 };
 
-const BusinessDetails = ({ business }: Props) => {
+const BusinessDetails = ({ business, onAddressPress, onPhonePress }: Props) => {
   const {
     name,
     rating,
@@ -71,16 +73,11 @@ const BusinessDetails = ({ business }: Props) => {
             <Rating size={20} rating={rating} />
           </View>}
       </View>
-      {phone &&
-        <Section icon={<Icon name="md-call" size={20} />}>
-          <View>
-            <Text style={styles.text}>
-              {phone}
-            </Text>
-          </View>
-        </Section>}
       {addressLine1 &&
-        <Section icon={<Icon name="md-pin" size={20} />}>
+        <Section
+          icon={<Icon name="md-pin" size={20} />}
+          onPress={onAddressPress}
+        >
           <View>
             <Text style={styles.text}>
               {addressLine1}
@@ -92,6 +89,17 @@ const BusinessDetails = ({ business }: Props) => {
                 {addressLine2}
               </Text>
             </View>}
+        </Section>}
+      {phone &&
+        <Section
+          icon={<Icon name="md-call" size={20} />}
+          onPress={onPhonePress}
+        >
+          <View>
+            <Text style={styles.text}>
+              {phone}
+            </Text>
+          </View>
         </Section>}
     </View>
   );

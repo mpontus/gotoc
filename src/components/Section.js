@@ -1,6 +1,6 @@
 // @flow
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, TouchableNativeFeedback, View } from 'react-native';
 
 const styles = StyleSheet.create({
   container: {
@@ -20,6 +20,7 @@ const styles = StyleSheet.create({
 type Props = {
   icon?: ?React.Element<*>,
   children?: ?React.Element<*>,
+  onPress: (event: Event) => void,
 };
 
 const defaultProps = {
@@ -27,16 +28,21 @@ const defaultProps = {
   children: null,
 };
 
-const Section = ({ icon, children }: Props) =>
-  (<View style={styles.container}>
-    {icon &&
-      <View style={styles.iconContainer}>
-        {icon}
-      </View>}
-    <View style={styles.content}>
-      {children}
+const Section = ({ icon, children, onPress }: Props) =>
+  (<TouchableNativeFeedback
+    onPress={onPress}
+    background={TouchableNativeFeedback.SelectableBackground()}
+  >
+    <View style={styles.container}>
+      {icon &&
+        <View style={styles.iconContainer}>
+          {icon}
+        </View>}
+      <View style={styles.content}>
+        {children}
+      </View>
     </View>
-  </View>);
+  </TouchableNativeFeedback>);
 
 Section.defaultProps = defaultProps;
 
