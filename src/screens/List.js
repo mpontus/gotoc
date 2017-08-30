@@ -14,7 +14,7 @@ const ListScreen = ({ navigator }: Props) =>
         screen: 'gotoc.Details',
         title: business.name,
         passProps: {
-          id: business.id,
+          businessId: business.id,
         },
       })}
   />);

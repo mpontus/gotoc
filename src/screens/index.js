@@ -2,7 +2,7 @@
 import { Navigation } from 'react-native-navigation';
 import Map from './Map';
 import List from './List';
-import Details from './Details';
+import Details from './BusinessDetailsScreen';
 
 export function registerScreens(store, Provider) {
   Navigation.registerComponent('gotoc.Map', () => Map, store, Provider);
