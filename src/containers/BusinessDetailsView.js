@@ -3,9 +3,10 @@ import React from 'react';
 import { Linking } from 'react-native';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
-import { compose, withHandlers } from 'recompose';
+import { compose, withHandlers, lifecycle } from 'recompose';
 import BusinessDetails from 'components/BusinessDetails';
 import { makeGetBusiness } from 'reducers/businesses';
+import { visitBusinessDetails } from 'actions/navigation';
 import type { Business } from 'types/Business';
 
 const mapStateToProps = () =>
@@ -14,7 +15,14 @@ const mapStateToProps = () =>
   });
 
 const enhance = compose(
-  connect(mapStateToProps),
+  connect(mapStateToProps, { visitBusinessDetails }),
+  lifecycle({
+    componentDidMount() {
+      const { visitBusinessDetails, business } = this.props;
+
+      visitBusinessDetails(business, null);
+    },
+  }),
   withHandlers({
     onAddressPress: ({ business }) => () => {
       const { address1, city } = business.location;
