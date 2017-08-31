@@ -45,11 +45,19 @@ const styles = StyleSheet.create({
 
 type Props = {
   business: Business,
+  reviews: ?(Review[]),
+  reviewsFetching: boolean,
   onAddressPress: (event: Event) => void,
   onPhonePress: (event: Event) => void,
 };
 
-const BusinessDetails = ({ business, onAddressPress, onPhonePress }: Props) => {
+const BusinessDetails = ({
+  business,
+  reviews,
+  reviewsFetching,
+  onAddressPress,
+  onPhonePress,
+}: Props) => {
   const {
     name,
     rating,
@@ -101,6 +109,16 @@ const BusinessDetails = ({ business, onAddressPress, onPhonePress }: Props) => {
             </Text>
           </View>
         </Section>}
+      {reviews &&
+        <View>
+          <Text>
+            Total reviews: {reviews.size}
+          </Text>
+        </View>}
+      {reviewsFetching &&
+        <View>
+          <Text>Fetching...</Text>
+        </View>}
     </View>
   );
 };

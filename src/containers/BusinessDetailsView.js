@@ -6,12 +6,16 @@ import { createStructuredSelector } from 'reselect';
 import { compose, withHandlers, lifecycle } from 'recompose';
 import BusinessDetails from 'components/BusinessDetails';
 import { makeGetBusiness } from 'reducers/businesses';
+import { makeGetBusinessReviews } from 'reducers/businessReviews';
+import { makeGetBusinessReviewsFetching } from 'reducers/businessReviewsFetching';
 import { visitBusinessDetails } from 'actions/navigation';
 import type { Business } from 'types/Business';
 
 const mapStateToProps = () =>
   createStructuredSelector({
     business: makeGetBusiness(),
+    reviews: makeGetBusinessReviews(),
+    reviewsFetching: makeGetBusinessReviewsFetching(),
   });
 
 const enhance = compose(
@@ -40,17 +44,23 @@ const enhance = compose(
 
 type Props = {
   business: Business,
+  reviews: ?(Review[]),
+  reviewsFetching: boolean,
   onAddressPress: (event: Event) => void,
   onPhonePress: (event: Event) => void,
 };
 
 const BusinessDetailsView = ({
   business,
+  reviews,
+  reviewsFetching,
   onAddressPress,
   onPhonePress,
 }: Props) =>
   (<BusinessDetails
     business={business}
+    reviews={reviews}
+    reviewsFetching={reviewsFetching}
     onAddressPress={onAddressPress}
     onPhonePress={onPhonePress}
   />);
