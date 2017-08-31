@@ -51,6 +51,7 @@
     "immutable": "^3.8.1",
     "material-colors": "^1.2.5",
     "mathjs": "^3.16.1",
+    "normalizr": "^3.2.3",
     "query-string": "^5.0.0",
     "ramda": "^0.24.1",
     "react": "16.0.0-alpha.12",
