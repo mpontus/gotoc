@@ -2,6 +2,7 @@
 import R from 'ramda';
 import qs from 'query-string';
 import type { Business } from 'types/Business';
+import type { Review } from 'types/Review';
 
 const processResponse = (response: Response) => response.json();
 
@@ -100,6 +101,11 @@ export type SearchResult = {
   },
 };
 
+export type ReviewsResult = {
+  total: number,
+  reviews: Review[],
+};
+
 class YelpApi {
   clientId: string;
   clientSecret: string;
@@ -169,6 +175,12 @@ class YelpApi {
     const url = `https://api.yelp.com/v3/businesses/search?${queryString}`;
 
     return this.get(url);
+  }
+
+  fetchReviews(businessId: string): Promise<ReviewsResult> {
+    const url = `https://api.yelp.com/v3/businesses/${businessId}/reviews`;
+
+    return this.get(url).then(R.tap(console.log));
   }
 }
 
