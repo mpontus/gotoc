@@ -4,7 +4,7 @@ import type { Location } from 'types/Location';
 import type { Region } from 'types/Region';
 import type { Review } from 'types/Review';
 import { REGION_CHANGE } from './map';
-import { BUSINESSES_ADDED } from './businesses';
+import { BUSINESSES_ADDED, BUSINESS_REVIEWS_RETRIEVED } from './businesses';
 import { USER_LOCATION_UPDATED } from './location';
 import { BUSINESS_DETAILS_VISITED } from './navigation';
 
@@ -28,5 +28,13 @@ export type Action =
       payload: {|
         business: Business,
         reviews: ?(Review[]),
+      |},
+    |}
+  | {|
+      type: typeof BUSINESS_REVIEWS_RETRIEVED,
+      payload: {|
+        business: Business,
+        reviewIds: string[],
+        reviews: { [key: string]: Review[] },
       |},
     |};
