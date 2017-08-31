@@ -15,8 +15,6 @@
     "jest/no-focused-tests": "error",
     "jest/no-identical-title": "error",
     "jest/valid-expect": "error",
-    "react/no-unused-prop-types": 0,
-    "react/jsx-filename-extension": 0,
     "eslint-comments/no-duplicate-disable": "error",
     "eslint-comments/no-unlimited-disable": "error",
     "eslint-comments/no-unused-disable": "error",
@@ -26,7 +24,22 @@
         "**/__tests__/*",
         "**/*.dev.js"
       ]
-    }]
+    }],
+    // See: https://github.com/airbnb/javascript/issues/1089#issuecomment-249398789
+    "global-require": 0, // Used by React Native.
+    "new-cap": [2, {"capIsNew": false, "newIsCap": true}], // For immutable Record() etc.
+    "no-class-assign": 0, // Class assign is used for higher order components.
+    "no-nested-ternary": 0, // It's nice for JSX.
+    "no-param-reassign": 0, // We love param reassignment. Naming is hard.
+    "no-shadow": 0, // Shadowing is a nice language feature. Naming is hard.
+    "import/imports-first": 0, // Este sorts by atom/sort-lines natural order.
+    "react/jsx-filename-extension": 0, // No, JSX belongs to .js files
+    "jsx-a11y/html-has-lang": 0, // Can't recognize the Helmet.
+    "no-confusing-arrow": 0, // This rule is super confusing.
+    "react/forbid-prop-types": 0, // Este is going to use Flow types.
+    "react/no-unused-prop-types": 0, // Este is going to use Flow types.
+    "class-methods-use-this": 0, // Good idea, but ignores React render.
+    "arrow-parens": 0 // Not really.
   },
   "env": {
     "browser": true,
