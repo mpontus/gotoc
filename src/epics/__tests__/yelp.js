@@ -79,6 +79,7 @@ describe('Yelp Epic', () => {
         { id: 4, distance: 13 },
         { id: 5, distance: 18 },
       ]),
+      addBusinesses([], true),
     ]);
   });
 
@@ -132,6 +133,7 @@ describe('Yelp Epic', () => {
         { id: 4, distance: 6 },
         { id: 5, distance: 7 },
       ]),
+      addBusinesses([], true),
     ]);
     expect(api.search).toHaveBeenCalledTimes(4);
   });

@@ -97,9 +97,10 @@ const yelpEpic = (
         longitude,
         latitudeDelta,
         longitudeDelta,
-      );
-    })
-    .map(addBusinesses);
+      )
+        .map(businesses => addBusinesses(businesses))
+        .concat(Observable.of(addBusinesses([], true)));
+    });
 };
 
 export default yelpEpic;
