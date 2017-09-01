@@ -1,20 +1,18 @@
 // @flow
 import React from 'react';
-import { ImmutableListView } from 'react-native-immutable-list-view';
-import type { Review } from 'types/Review';
+import { View } from 'react-native';
+import type { List } from 'immutable';
 import ReviewItem from './ReviewItem';
 
 type Props = {
-  reviews: Review[],
+  reviews: List<any>,
 };
 
-const renderRow = review => <ReviewItem review={review} />;
-
 const ReviewList = ({ reviews }: Props) =>
-  (<ImmutableListView
-    enableEmptySections
-    immutableData={reviews}
-    renderRow={renderRow}
-  />);
+  (<View>
+    {reviews.map(review =>
+      <ReviewItem key={review.get('url')} review={review} />,
+    )}
+  </View>);
 
 export default ReviewList;

@@ -1,7 +1,14 @@
 // @flow
 import React from 'react';
 import type { List } from 'immutable';
-import { StyleSheet, Image, View, Text, ActivityIndicator } from 'react-native';
+import {
+  StyleSheet,
+  Image,
+  ScrollView,
+  View,
+  Text,
+  ActivityIndicator,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { grey } from 'material-colors';
 import Section from 'components/Section';
@@ -70,7 +77,7 @@ const BusinessDetails = ({
   } = business;
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       {image && <Image source={{ uri: image }} style={styles.image} />}
       <View style={styles.title}>
         {name &&
@@ -114,7 +121,7 @@ const BusinessDetails = ({
         </Section>}
       {reviews && <ReviewList reviews={reviews} />}
       {reviewsFetching && <ActivityIndicator />}
-    </View>
+    </ScrollView>
   );
 };
 

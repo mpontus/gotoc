@@ -5,7 +5,7 @@ import Rating from 'components/Rating';
 
 type Props = {
   // TODO Better types
-  review: Map<*, *>,
+  review: any,
 };
 
 const styles = StyleSheet.create({
@@ -31,7 +31,6 @@ const styles = StyleSheet.create({
 });
 
 const ReviewItem = ({ review }: Props) => {
-  // $FlowFixMe
   const { rating, user, text } = review.toJS();
 
   return (
