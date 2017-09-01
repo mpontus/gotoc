@@ -180,7 +180,7 @@ class YelpApi {
   fetchReviews(businessId: string): Promise<ReviewsResult> {
     const url = `https://api.yelp.com/v3/businesses/${businessId}/reviews`;
 
-    return this.get(url).then(R.tap(console.log));
+    return this.get(url);
   }
 }
 
