@@ -54,3 +54,4 @@ buck-out/
 fastlane/report.xml
 fastlane/Preview.html
 fastlane/screenshots
+android/app/gotoc-release-key.keystore
