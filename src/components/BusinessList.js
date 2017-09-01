@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
 class BusinessList extends React.Component<void, Props, State> {
   state = {
     dataSource: new ListView.DataSource({
-      rowHasChanged: (prev, next) => prev === next,
+      rowHasChanged: (prev, next) => prev !== next,
     }),
   };
 
