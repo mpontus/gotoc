@@ -2,6 +2,7 @@ import { Observable } from 'rxjs';
 import { ActionsObservable } from 'redux-observable';
 import R from 'ramda';
 import { regionChange } from 'actions/map';
+import { addBusinesses } from 'actions/businesses';
 import { getRadiusForRegion } from 'util/geo';
 import epic, { exhaustiveFetch } from '../yelp';
 
@@ -49,24 +50,36 @@ describe('Yelp Epic', () => {
     api.search
       .mockReturnValueOnce(
         makeResponse({
-          businesses: [{ distance: 3 }, { distance: 5 }, { distance: 7 }],
+          businesses: [
+            { id: 1, distance: 3 },
+            { id: 2, distance: 5 },
+            { id: 3, distance: 7 },
+          ],
         }),
       )
       .mockReturnValueOnce(
         makeResponse({
-          businesses: [{ distance: 13 }, { distance: 18 }, { distance: 21 }],
+          businesses: [
+            { id: 4, distance: 13 },
+            { id: 5, distance: 18 },
+            { id: 6, distance: 21 },
+          ],
         }),
       );
 
     const output$ = epic(input$, null, { api, config: defaultConfig });
     const output = await output$.toArray().toPromise();
-    const businesses = R.compose(
-      R.flatten,
-      R.map(R.path(['payload', 'businesses'])),
-    )(output);
 
     expect(api.search).toHaveBeenCalledTimes(2);
-    expect(businesses.length).toBe(5);
+    expect(output).toEqual([
+      addBusinesses([
+        { id: 1, distance: 3 },
+        { id: 2, distance: 5 },
+        { id: 3, distance: 7 },
+        { id: 4, distance: 13 },
+        { id: 5, distance: 18 },
+      ]),
+    ]);
   });
 
   it('must query the api until all pages are exhausted', async () => {
@@ -85,17 +98,21 @@ describe('Yelp Epic', () => {
     api.search
       .mockReturnValueOnce(
         makeResponse({
-          businesses: [{ distance: 3 }],
+          businesses: [{ id: 1, distance: 3 }],
         }),
       )
       .mockReturnValueOnce(
         makeResponse({
-          businesses: [{ distance: 4 }],
+          businesses: [{ id: 2, distance: 4 }],
         }),
       )
       .mockReturnValueOnce(
         makeResponse({
-          businesses: [{ distance: 5 }, { distance: 6 }, { distance: 7 }],
+          businesses: [
+            { id: 3, distance: 5 },
+            { id: 4, distance: 6 },
+            { id: 5, distance: 7 },
+          ],
         }),
       )
       .mockReturnValueOnce(
@@ -106,12 +123,16 @@ describe('Yelp Epic', () => {
 
     const output$ = epic(input$, null, { api, config: defaultConfig });
     const output = await output$.toArray().toPromise();
-    const businesses = R.compose(
-      R.flatten,
-      R.map(R.path(['payload', 'businesses'])),
-    )(output);
 
-    expect(businesses.length).toBe(5);
+    expect(output).toEqual([
+      addBusinesses([
+        { id: 1, distance: 3 },
+        { id: 2, distance: 4 },
+        { id: 3, distance: 5 },
+        { id: 4, distance: 6 },
+        { id: 5, distance: 7 },
+      ]),
+    ]);
     expect(api.search).toHaveBeenCalledTimes(4);
   });
 

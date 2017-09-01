@@ -10,7 +10,7 @@ import { getDeltasForRadius } from 'util/geo';
 import { getZoomLevel as calculateZoomLevel } from 'util/map';
 import generalizeRegion from 'util/generalizeRegion';
 import { getPoints } from 'reducers/points';
-import { getBusinesses } from 'reducers/businesses';
+import { getBusinesses } from 'reducers/entities';
 import { REGION_CHANGE, LAYOUT_CHANGE } from 'actions/map';
 import type { Business } from 'types/Business';
 

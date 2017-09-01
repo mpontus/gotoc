@@ -103,26 +103,28 @@ describe('makeGetClusters', () => {
     const getClusters = makeGetClusters();
 
     const state = fromJS({
-      businesses: {
-        1: {
-          id: '1',
-          coordinates: {
-            latitude: 13,
-            longitude: 18,
+      entities: {
+        businesses: {
+          1: {
+            id: '1',
+            coordinates: {
+              latitude: 13,
+              longitude: 18,
+            },
           },
-        },
-        2: {
-          id: '2',
-          coordinates: {
-            latitude: 65,
-            longitude: 84,
+          2: {
+            id: '2',
+            coordinates: {
+              latitude: 65,
+              longitude: 84,
+            },
           },
-        },
-        3: {
-          id: '3',
-          coordinates: {
-            latitude: 15,
-            longitude: 14,
+          3: {
+            id: '3',
+            coordinates: {
+              latitude: 15,
+              longitude: 14,
+            },
           },
         },
       },

@@ -16,7 +16,10 @@ export type Action =
   | {|
       type: typeof BUSINESSES_ADDED,
       payload: {
-        businesses: Business[],
+        result: string[],
+        entities: {
+          businesses: { [key: string]: Business },
+        },
       },
     |}
   | {|

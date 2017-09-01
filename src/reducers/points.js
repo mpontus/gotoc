@@ -1,7 +1,6 @@
 // @flow
 import { Map, Set } from 'immutable';
 import { handleActions } from 'redux-actions';
-import { prop } from 'ramda';
 import Quadtree from 'util/quadtree';
 import { BUSINESSES_ADDED } from 'actions/businesses';
 import type { Action } from 'actions/types';
@@ -15,9 +14,9 @@ const indexReducer = handleActions(
   {
     [BUSINESSES_ADDED]: (state, action) =>
       state.withMutations(set => {
-        const { businesses } = action.payload;
+        const { result } = action.payload;
 
-        return set.union(businesses.map(prop('id')));
+        return set.union(result);
       }),
   },
   initialState.get('index'),
@@ -28,14 +27,15 @@ const treeReducer = (state, action, context) => {
     case BUSINESSES_ADDED: {
       const index = context.get('index');
       // $FlowFixMe
-      const { businesses } = action.payload;
+      const { result, entities } = action.payload;
+      const { businesses } = entities;
 
       return (
-        businesses
+        result
           // $FlowFixMe
-          .filter(business => !index.has(business.id))
-          .reduce((points, business) => {
-            const { id } = business;
+          .filter(id => !index.has(id))
+          .reduce((points, id) => {
+            const business = businesses[id];
             const { latitude, longitude } = business.coordinates;
 
             // $FlowFixMe

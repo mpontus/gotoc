@@ -1,13 +1,15 @@
 import { fromJS } from 'immutable';
 import { addBusinesses } from 'actions/businesses';
-import reducer from '../businesses';
+import reducer from '../entities';
 
 describe('reducer', () => {
   it('handles BUSINESSES_ADDED', () => {
     const initialState = fromJS({
-      lisp: {
-        id: 'lisp',
-        name: 'Lisp',
+      businesses: {
+        lisp: {
+          id: 'lisp',
+          name: 'Lisp',
+        },
       },
     });
     const action = addBusinesses([
@@ -24,17 +26,19 @@ describe('reducer', () => {
     const state = reducer(initialState, action);
 
     expect(state.toJS()).toEqual({
-      lisp: {
-        id: 'lisp',
-        name: 'Lisp',
-      },
-      haskell: {
-        id: 'haskell',
-        name: 'Haskell',
-      },
-      prolog: {
-        id: 'prolog',
-        name: 'Prolog',
+      businesses: {
+        lisp: {
+          id: 'lisp',
+          name: 'Lisp',
+        },
+        haskell: {
+          id: 'haskell',
+          name: 'Haskell',
+        },
+        prolog: {
+          id: 'prolog',
+          name: 'Prolog',
+        },
       },
     });
   });
