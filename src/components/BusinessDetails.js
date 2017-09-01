@@ -1,11 +1,14 @@
 // @flow
 import React from 'react';
-import { StyleSheet, Image, View, Text } from 'react-native';
+import type { List } from 'immutable';
+import { StyleSheet, Image, View, Text, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { grey } from 'material-colors';
 import Section from 'components/Section';
 import Rating from 'components/Rating';
+import ReviewList from 'components/ReviewList';
 import type { Business } from 'types/Business';
+import type { Review } from 'types/Review';
 
 const styles = StyleSheet.create({
   container: {
@@ -45,7 +48,7 @@ const styles = StyleSheet.create({
 
 type Props = {
   business: Business,
-  reviews: ?(Review[]),
+  reviews: ?List<Review>,
   reviewsFetching: boolean,
   onAddressPress: (event: Event) => void,
   onPhonePress: (event: Event) => void,
@@ -109,16 +112,8 @@ const BusinessDetails = ({
             </Text>
           </View>
         </Section>}
-      {reviews &&
-        <View>
-          <Text>
-            Total reviews: {reviews.size}
-          </Text>
-        </View>}
-      {reviewsFetching &&
-        <View>
-          <Text>Fetching...</Text>
-        </View>}
+      {reviews && <ReviewList reviews={reviews} />}
+      {reviewsFetching && <ActivityIndicator />}
     </View>
   );
 };

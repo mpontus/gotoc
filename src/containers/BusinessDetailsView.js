@@ -1,5 +1,6 @@
 // @flow
 import React from 'react';
+import type { List } from 'immutable';
 import { Linking } from 'react-native';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
@@ -10,6 +11,7 @@ import { makeGetBusinessReviews } from 'reducers/businessReviews';
 import { makeGetBusinessReviewsFetching } from 'reducers/businessReviewsFetching';
 import { visitBusinessDetails } from 'actions/navigation';
 import type { Business } from 'types/Business';
+import type { Review } from 'types/Review';
 
 const mapStateToProps = () =>
   createStructuredSelector({
@@ -44,7 +46,7 @@ const enhance = compose(
 
 type Props = {
   business: Business,
-  reviews: ?(Review[]),
+  reviews: ?List<Review>,
   reviewsFetching: boolean,
   onAddressPress: (event: Event) => void,
   onPhonePress: (event: Event) => void,

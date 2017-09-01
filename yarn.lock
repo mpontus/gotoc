@@ -2620,7 +2620,7 @@ image-size@^0.3.5:
   version "0.3.5"
   resolved "https://registry.yarnpkg.com/image-size/-/image-size-0.3.5.tgz#83240eab2fb5b00b04aab8c74b0471e9cba7ad8c"
 
-immutable@^3.8.1:
+immutable@>=3.8, immutable@^3.8.1:
   version "3.8.1"
   resolved "https://registry.yarnpkg.com/immutable/-/immutable-3.8.1.tgz#200807f11ab0f72710ea485542de088075f68cd2"
 
@@ -4310,6 +4310,13 @@ react-devtools-core@2.3.1:
 react-native-config@^0.6.0:
   version "0.6.0"
   resolved "https://registry.yarnpkg.com/react-native-config/-/react-native-config-0.6.0.tgz#0f71631ab5ac4b568637dcb8e9f6ab85ffb380ed"
+
+react-native-immutable-list-view@^0.6.2:
+  version "0.6.2"
+  resolved "https://registry.yarnpkg.com/react-native-immutable-list-view/-/react-native-immutable-list-view-0.6.2.tgz#294fb9327bd39e6565ad07a2da83aa71e5902d31"
+  dependencies:
+    immutable ">=3.8"
+    prop-types "^15.5.10"
 
 react-native-maps@^0.16.2:
   version "0.16.2"
