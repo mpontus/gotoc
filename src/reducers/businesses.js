@@ -1,46 +1,44 @@
-// @flow
-import { Map, fromJS } from 'immutable';
+import { Map, OrderedSet } from 'immutable';
 import { createSelector } from 'reselect';
-import type { Business } from 'types/Business';
+import { REGION_CHANGE } from 'actions/map';
 import { BUSINESSES_ADDED } from 'actions/businesses';
-import type { Action } from 'actions/types';
-import type { State } from './types';
+import { getBusinesses } from 'reducers/entities';
 
-export default function businessesReducer(
-  state: Map<string, Business> = Map(),
-  action: Action,
-) {
+const initialState = Map({
+  fetching: false,
+  ids: OrderedSet(),
+});
+
+const businessesReducer = (state = initialState, action) => {
   switch (action.type) {
+    case REGION_CHANGE: {
+      return state.withMutations(map =>
+        map.set('fetching', true).set('ids', OrderedSet()),
+      );
+    }
     case BUSINESSES_ADDED: {
-      // $FlowFixMe
-      const { businesses } = action.payload;
+      const { result, complete } = action.payload;
 
       return state.withMutations(map => {
-        businesses.forEach(business => {
-          const { id } = business;
+        map.update('ids', list => list.concat(result));
 
-          map.set(id, fromJS(business));
-        });
+        map.set('fetching', !complete);
       });
     }
 
     default:
       return state;
   }
-}
+};
 
-export const getBusinesses = (state: State): Map<string, Map<string, any>> =>
-  state.get('businesses');
+export default businessesReducer;
 
-const getIdProp = (state, ownProps) => ownProps.id;
+const getBusinessIds = state => state.getIn(['businesses', 'ids']);
 
-export const makeGetBusiness = () =>
-  createSelector([getBusinesses, getIdProp], (businesses, id) => {
-    const business = businesses.get(id);
+export const getBusinessesFetching = state =>
+  state.getIn(['businesses', 'fetching']);
 
-    if (!business) {
-      return null;
-    }
-
-    return business.toJS();
-  });
+export const makeGetBusinesses = () =>
+  createSelector([getBusinesses, getBusinessIds], (businesses, ids) =>
+    ids.map(id => businesses.get(id)).toJS(),
+  );

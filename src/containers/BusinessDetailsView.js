@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { compose, withHandlers, lifecycle } from 'recompose';
 import BusinessDetails from 'components/BusinessDetails';
-import { makeGetBusiness } from 'reducers/businesses';
+import { makeGetBusiness } from 'reducers/entities';
 import { makeGetBusinessReviews } from 'reducers/businessReviews';
 import { makeGetBusinessReviewsFetching } from 'reducers/businessReviewsFetching';
 import { visitBusinessDetails } from 'actions/navigation';

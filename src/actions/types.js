@@ -20,6 +20,7 @@ export type Action =
         entities: {
           businesses: { [key: string]: Business },
         },
+        complete: boolean,
       },
     |}
   | {|

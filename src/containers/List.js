@@ -2,7 +2,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
-import { makeGetBusinesses } from 'reducers/map';
+import { makeGetBusinesses } from 'reducers/businesses';
 import BusinessList from 'components/BusinessList';
 import type { Business } from 'types/Business';
 

@@ -9,7 +9,10 @@ export const BUSINESS_REVIEWS_RETRIEVED = 'BUSINESS_REVIEWS_RETRIEVED';
 
 const businessSchema = new schema.Entity('businesses');
 
-export function addBusinesses(businesses: Business[]): Action {
+export function addBusinesses(
+  businesses: Business[],
+  complete: boolean = false,
+): Action {
   const { result, entities } = normalize(businesses, [businessSchema]);
 
   return {
@@ -17,6 +20,7 @@ export function addBusinesses(businesses: Business[]): Action {
     payload: {
       result,
       entities,
+      complete,
     },
   };
 }
