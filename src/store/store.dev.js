@@ -2,7 +2,6 @@ import { applyMiddleware } from 'redux';
 import { createEpicMiddleware } from 'redux-observable';
 import { composeWithDevTools } from 'remote-redux-devtools';
 import Reactotron from './reactotron.dev';
-import loadFixtures from './fixtures.dev';
 import createReducer from './reducer';
 import rootEpic from './epic';
 
@@ -15,16 +14,11 @@ const composeEnhancers = composeWithDevTools({
 });
 
 export default function configureStore(api, config) {
-  const preloadedState = loadFixtures(config);
   const reducer = createReducer(config);
   const epicMiddleware = createEpicMiddleware(rootEpic, {
     dependencies: { api, config },
   });
   const middlewareEnhancer = applyMiddleware(epicMiddleware);
 
-  return Reactotron.createStore(
-    reducer,
-    preloadedState,
-    composeEnhancers(middlewareEnhancer),
-  );
+  return Reactotron.createStore(reducer, composeEnhancers(middlewareEnhancer));
 }
