@@ -5,7 +5,7 @@ import { BUSINESSES_ADDED } from 'actions/businesses';
 import { getBusinesses } from 'reducers/entities';
 
 const initialState = Map({
-  fetching: false,
+  fetching: true,
   ids: OrderedSet(),
 });
 
