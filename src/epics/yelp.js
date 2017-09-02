@@ -1,5 +1,6 @@
 // @flow
 import type { ActionsObservable } from 'redux-observable';
+import { combineEpics } from 'redux-observable';
 import { Observable } from 'rxjs';
 import { curry } from 'ramda';
 import type { Config } from 'types/Config';
@@ -77,7 +78,7 @@ const createBusinessesObservable = curry(
   },
 );
 
-const yelpEpic = (
+export const regionChangeEpic = (
   action$: ActionsObservable<Action>,
   store: any,
   { api, config }: { api: YelpApi, config: Config },
@@ -103,4 +104,25 @@ const yelpEpic = (
     });
 };
 
-export default yelpEpic;
+export const initialEpic = (
+  action$: ActionsObservable<Action>,
+  store: any,
+  { api, config }: { api: YelpApi, config: Config },
+): Observable<Action> => {
+  const { defaultLatitude: latitude, defaultLongitude: longitude } = config;
+  const fetcher = yelpSearch(api, latitude, longitude);
+  const countGetter = response => response.businesses.length;
+
+  return (
+    exhaustiveFetch(fetcher, countGetter)
+      .takeUntil(action$.ofType(REGION_CHANGE))
+      // Make at most 5 requests for every location change
+      .take(config.maxConsecutiveRequests)
+      .map(response => addBusinesses(response.businesses))
+      .concat(Observable.of(addBusinesses([], true)))
+  );
+};
+
+// TODO: Refactor this
+
+export default combineEpics(initialEpic, regionChangeEpic);

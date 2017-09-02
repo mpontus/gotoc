@@ -4,7 +4,8 @@ import R from 'ramda';
 import { regionChange } from 'actions/map';
 import { addBusinesses } from 'actions/businesses';
 import { getRadiusForRegion } from 'util/geo';
-import epic, { exhaustiveFetch } from '../yelp';
+// TODO: fix this -------------------------v
+import { exhaustiveFetch, regionChangeEpic as epic } from '../yelp';
 
 jest.mock('util/geo');
 
