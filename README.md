@@ -2,10 +2,6 @@
 
 This is an example project I'm making to teach myself mobile development.
 
-## Working state
-
-Don't try to run this app. It could not be launched at the time of writing.
-
 ## Technology Stack
 
 Platform choices for this app now primarily consist of:
